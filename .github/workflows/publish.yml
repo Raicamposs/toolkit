@@ -34,11 +34,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Autenticar com GITHUB_TOKEN
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-
       - name: Bump Version
         run: npm version patch # Increments the patch version and creates a Git commit
         env:
