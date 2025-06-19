@@ -37,7 +37,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Ensure npm token is available
 
       - name: Push Version Update
-        run: git push # Pushes the version bump commit and tag to the repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }} # Use the Personal Access Token stored in Secrets
+        run: |
+          git push https://x-access-token:${{ secrets.PAT }}@github.com/Raicamposs/toolkit.git
+          git push https://x-access-token:${{ secrets.PAT }}@github.com/Raicamposs/toolkit.git --tags
+        # Pushes the version bump commit and tag using the PAT for authentication
 
       - name: Run Tests
         run: npm test # Runs tests to ensure the package is stable before publishing
