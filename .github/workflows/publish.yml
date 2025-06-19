@@ -27,9 +27,8 @@ jobs:
 
       - name: Configure Git User
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-        # Sets Git identity for commits made by npm version
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Bump Version
         run: npm version patch # Increments the patch version and creates a Git commit
@@ -40,7 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }} # Use the Personal Access Token stored in Secrets
         run: |
-          git push https://Raicamposs:${{ secrets.PAT }}@github.com/Raicamposs/toolkit.git --tags
+          git clone https://$GITHUB_TOKEN@github.com/Raicamposs/toolkit.git --tags
         # Pushes the version bump commit and tag using the PAT for authentication
 
       - name: Run Tests
