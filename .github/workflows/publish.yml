@@ -12,23 +12,36 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4 # Checks out the repository code
+        with:
+          fetch-depth: 0 # Required for Git history access when bumping version
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18" # Specify Node.js version; adjust if your project requires a different version
+          node-version: "18" # Specify Node.js version; adjust if needed
           registry-url: "https://registry.npmjs.org" # npm registry for publishing
           cache: "npm" # Cache npm dependencies to speed up builds
 
       - name: Install Dependencies
         run: npm ci # Installs dependencies cleanly using package-lock.json
 
+      - name: Configure Git User
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+        # Sets Git identity for commits made by npm version
+
+      - name: Bump Version
+        run: npm version patch # Increments the patch version and creates a Git commit
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Ensure npm token is available
+
+      - name: Push Version Update
+        run: git push # Pushes the version bump commit and tag to the repository
+
       - name: Run Tests
         run: npm test # Runs tests to ensure the package is stable before publishing
         continue-on-error: false # Stop the workflow if tests fail
-
-      - name: Bump Version
-        run: npm version patch # or 'minor'/'major' depending on your versioning strategy
 
       - name: Publish to npm
         env:
