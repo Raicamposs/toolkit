@@ -40,8 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }} # Use the Personal Access Token stored in Secrets
         run: |
-          git push https://x-access-token:${{ secrets.PAT }}@github.com/Raicamposs/toolkit.git
-          git push https://x-access-token:${{ secrets.PAT }}@github.com/Raicamposs/toolkit.git --tags
+          git push https://Raicamposs:${{ secrets.PAT }}@github.com/Raicamposs/toolkit.git --tags
         # Pushes the version bump commit and tag using the PAT for authentication
 
       - name: Run Tests
