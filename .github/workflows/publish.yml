@@ -1,0 +1,34 @@
+# .github/workflows/publish.yml
+
+name: Publicar no npm
+
+on:
+  push:
+    branches:
+      - main # Ou a branch principal do seu projeto (ex: master, develop)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest # O sistema operacional onde o job será executado
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4 # Baixa seu código do repositório
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18" # Ou a versão do Node.js que seu pacote usa
+          registry-url: "https://registry.npmjs.org/" # O registro do npm
+
+      - name: Instalar Dependências
+        run: npm ci # 'npm ci' é melhor para CI/CD pois instala dependências de forma limpa baseada no package-lock.json
+
+      # - name: Rodar Testes (Opcional, mas Altamente Recomendado)
+      #   run: npm test # Garante que seu pacote está funcionando antes de publicar
+      #   # Se seus testes falharem, o workflow parará aqui.
+
+      - name: Publicar no npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Usa o segredo que você criou
+        run: npm publish --access public # Adicione --access public se seu pacote for público
