@@ -29,24 +29,6 @@ jobs:
         run: npm test
         continue-on-error: false
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump Version
-        run: npm version patch --no-git-tag-version # Bump version without creating a tag yet
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create and Push Tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        run: |
-          git tag v$(node -p "require('./package.json').version")
-          git push https://$GITHUB_TOKEN@github.com/Raicamposs/toolkit.git
-          git push https://$GITHUB_TOKEN@github.com/Raicamposs/toolkit.git --tags
-
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
