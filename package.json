@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "version": "npm version patch",
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "test": "vitest",

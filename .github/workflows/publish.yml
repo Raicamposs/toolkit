@@ -29,6 +29,14 @@ jobs:
         run: npm test
         continue-on-error: false
 
+      - name: Debug npm Configuration
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" > .npmrc
+          npm whoami
+          npm publish --dry-run
+
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
