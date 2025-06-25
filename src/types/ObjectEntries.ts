@@ -1,3 +1,6 @@
+import { Entries } from "./Entries";
+
+
 
 /**
  * Converts an object into an array of key-value pairs.
@@ -6,5 +9,5 @@
  * @param obj The object to convert to entries
  * @returns An array of tuples containing the object's keys and corresponding values
  */
-export const ObjectEntries = <Obj extends { [s: string]: any }>(obj: Obj): [keyof Obj, any][] =>
-  Object.entries(obj) as [keyof Obj, any][]
+export const ObjectEntries = <T extends { [key: string]: unknown }>(value: T): Entries<T> =>
+  Object.entries(value) as Entries<T>;
