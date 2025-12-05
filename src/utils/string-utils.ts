@@ -125,4 +125,15 @@ export abstract class StringUtils {
     if (replaced.endsWith('_')) return replaced.substring(0, replaced.length - 1)
     return replaced
   }
+
+
+  static removeAccents(text: string): string {
+    if (!text || typeof text !== 'string' || text.length === 0) {
+      return text;
+    }
+
+    const normalizedText = text.normalize('NFD');
+    const finalText = normalizedText.replace(/[\u0300-\u036f]/g, '');
+    return finalText;
+  };
 }

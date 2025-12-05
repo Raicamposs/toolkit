@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { StringUtils } from './StringUtils'
+import { StringUtils } from './string-utils'
 
 describe('StringUtils', () => {
 
@@ -41,6 +41,19 @@ describe('StringUtils', () => {
     expect(StringUtils.slugify('   ')).toBe('')
     expect(StringUtils.slugify('Hello World!', '_')).toBe('hello_world')
     expect(StringUtils.slugify('Hello World!', '-')).toBe('hello-world')
+  })
+
+  it('should remove accents', () => {
+    expect(StringUtils.removeAccents('áéíóú')).toEqual('aeiou')
+    expect(StringUtils.removeAccents('ÁÉÍÓÚ')).toEqual('AEIOU')
+    expect(StringUtils.removeAccents('âêîôû')).toEqual('aeiou')
+    expect(StringUtils.removeAccents('ÂÊÎÔÛ')).toEqual('AEIOU')
+    expect(StringUtils.removeAccents('ãõ')).toEqual('ao')
+    expect(StringUtils.removeAccents('ÃÕ')).toEqual('AO')
+    expect(StringUtils.removeAccents('ç')).toEqual('c')
+    expect(StringUtils.removeAccents('Ç')).toEqual('C')
+    expect(StringUtils.removeAccents('batata')).toEqual('batata')
+    expect(StringUtils.removeAccents('uva')).toEqual('uva')
   })
 
 })

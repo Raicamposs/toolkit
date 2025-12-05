@@ -8,9 +8,9 @@ export * from './isNullOrUndefined';
 export * from './isUndefined';
 export * from './JSONConverter';
 export * from './nullIf';
-export * from './pickKeys';
-export * from './roundABNT';
-export * from './StringUtils';
+export * from './pick-keys';
+export * from './round-ABNT';
+export * from './string-utils';
 export * from './undefinedIf';
 export * from './withoutKey';
 

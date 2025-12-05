@@ -1,4 +1,4 @@
-import { Entries } from "./Entries";
+import { Entries } from "./entries";
 
 
 
@@ -11,3 +11,5 @@ import { Entries } from "./Entries";
  */
 export const ObjectEntries = <T extends { [key: string]: unknown }>(value: T): Entries<T> =>
   Object.entries(value) as Entries<T>;
+
+

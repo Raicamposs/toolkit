@@ -1,4 +1,4 @@
-import { roundABNT } from './roundABNT'
+import { roundABNT } from './round-ABNT'
 
 import { describe, expect, it } from 'vitest'
 describe('RoundNumber', () => {
