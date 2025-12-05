@@ -1,4 +1,3 @@
-export * from './entries';
 export * from './literal';
 export * from './nullable';
 export * from './object-entries';
