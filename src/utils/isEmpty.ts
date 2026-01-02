@@ -10,5 +10,8 @@ export function isEmpty(str: Nullable<string>): boolean {
   if (str === undefined || str === null) {
     return true;
   }
+  
+  if(typeof str !== 'string') throw Error('isEmpty method not suport this value : ' + JSON.stringify(str))
+    
   return str.trim().length === 0;
 }
