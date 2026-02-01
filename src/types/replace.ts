@@ -12,4 +12,4 @@
  * Replace<Post, { id: number }>
  * ```
  **/
-export type Replace<T, R> = Omit<T, keyof R> & R
+export type Replace<T, R> = Omit<T, keyof R> & R;

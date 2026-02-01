@@ -4,6 +4,7 @@ export * from './object-entries';
 export * from './object-keys';
 export * from './omit-nullable-properties';
 export * from './optional';
+export * from './prettify';
 export * from './replace';
+export * from './require-at-least-one';
 export * from './value-of';
-

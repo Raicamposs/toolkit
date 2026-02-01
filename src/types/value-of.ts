@@ -6,4 +6,4 @@
  * type MyObject = { a: string; b: number }
  * type Values = ValueOf<MyObject> // string | number
  */
-export type ValueOf<T> = T[keyof T]
+export type ValueOf<T> = T[keyof T];
