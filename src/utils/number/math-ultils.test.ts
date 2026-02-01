@@ -20,7 +20,7 @@ describe('MathUtils', () => {
       const percentage = 20;
 
       // Act
-      const result = MathUtils.calculatePercentage(value, percentage);
+      const result = MathUtils.calculatePercentage(value as any, percentage);
 
       // Assert
       expect(result).toBe(0);
@@ -32,7 +32,7 @@ describe('MathUtils', () => {
       const percentage = 20;
 
       // Act
-      const result = MathUtils.calculatePercentage(value, percentage);
+      const result = MathUtils.calculatePercentage(value as any, percentage);
 
       // Assert
       expect(result).toBe(0);
@@ -41,7 +41,7 @@ describe('MathUtils', () => {
     it('should return 0 if the percentage is undefined', () => {
       // Arrange
       const value = 50;
-      const percentage = undefined;
+      const percentage = undefined as any;
 
       // Act
       const result = MathUtils.calculatePercentage(value, percentage);
@@ -53,7 +53,7 @@ describe('MathUtils', () => {
     it('should return 0 if the percentage is null', () => {
       // Arrange
       const value = 50;
-      const percentage = null;
+      const percentage = null as any;
 
       // Act
       const result = MathUtils.calculatePercentage(value, percentage);
@@ -66,7 +66,7 @@ describe('MathUtils', () => {
   describe('calculatePercentageOf', () => {
     it('should return 0 if the value is undefined', () => {
       // Arrange
-      const value = undefined;
+      const value = undefined as any;
       const total = 50;
 
       // Act
@@ -78,7 +78,7 @@ describe('MathUtils', () => {
 
     it('should return 0 if the value is null', () => {
       // Arrange
-      const value = null;
+      const value = null as any;
       const total = 50;
 
       // Act
@@ -91,7 +91,7 @@ describe('MathUtils', () => {
     it('should return 0 if the total is undefined', () => {
       // Arrange
       const value = 10;
-      const total = undefined;
+      const total = undefined as any;
 
       // Act
       const result = MathUtils.calculatePercentageOf(value, total);
@@ -103,7 +103,7 @@ describe('MathUtils', () => {
     it('should return 0 if the total is null', () => {
       // Arrange
       const value = 10;
-      const total = null;
+      const total = null as any;
 
       // Act
       const result = MathUtils.calculatePercentageOf(value, total);
@@ -149,7 +149,7 @@ describe('MathUtils', () => {
 
     it('should return false if the value is undefined', () => {
       // Arrange
-      const value = undefined;
+      const value = undefined as any;
 
       // Act
       const result = MathUtils.isFractional(value);
