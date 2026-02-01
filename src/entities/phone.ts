@@ -1,53 +1,50 @@
-import { coalesce } from "../utils"
+import { coalesce } from '../utils/conditional/coalesce';
 
 export class Phone {
-  static regex = /^\(?(?:[14689][1-9]|2[12478]|3[1234578]|5[1345]|7[134579])\)? ?(?:[2-8]|9[1-9])[0-9]{3}\-?[0-9]{4}$/
-  private _value: string
+  static regex =
+    /^\(?(?:[14689][1-9]|2[12478]|3[1234578]|5[1345]|7[134579])\)? ?(?:[2-8]|9[1-9])[0-9]{3}\-?[0-9]{4}$/;
+  private _value: string;
 
   constructor(value: string) {
-    const data = coalesce(value, '').toString()
-    this._value = data.replace(/[^0-9]/gi, '')
+    const data = coalesce(value, '').toString();
+    this._value = data.replace(/[^0-9]/gi, '');
   }
 
   get value(): string {
-    const phone = coalesce(this._value, '').replace(/\D/g, '')
+    const phone = coalesce(this._value, '').replace(/\D/g, '');
 
     if (phone.length <= 10) {
-      return phone.replace(/(\d{2})(\d{4})(\d+)/, '($1)$2-$3')
+      return phone.replace(/(\d{2})(\d{4})(\d+)/, '($1)$2-$3');
     }
-    return phone.replace(/(\d{2})(\d{5})(\d+)/, '($1)$2-$3')
+    return phone.replace(/(\d{2})(\d{5})(\d+)/, '($1)$2-$3');
   }
 
   get numbersOnly(): string {
-    return this._value
+    return this._value;
   }
 
   toString(): string {
-    return this.value
+    return this.value;
   }
 
   get isValid(): boolean {
-    return [
-      Phone.regex.test(this._value)
-    ].every(Boolean)
+    return [Phone.regex.test(this._value)].every(Boolean);
   }
 
   static random(): Phone {
     // Escolhe um DDD aleatório
-    const ddd = DDD[Math.floor(Math.random() * DDD.length)]
+    const ddd = DDD[Math.floor(Math.random() * DDD.length)];
 
     // Gera um número de 7 dígitos
-    const number = Math.floor(1000000 + Math.random() * 9000000)
+    const number = Math.floor(1000000 + Math.random() * 9000000);
 
-    const data = [`${ddd}99${number}`, `${ddd}3${number}`][
-      Math.floor(Math.random() * 2)
-    ]
-    const phone = new Phone(data)
+    const data = [`${ddd}99${number}`, `${ddd}3${number}`][Math.floor(Math.random() * 2)];
+    const phone = new Phone(data);
     if (phone.isValid) {
-      return phone
+      return phone;
     }
 
-    return Phone.random()
+    return Phone.random();
   }
 }
 
@@ -119,4 +116,4 @@ const DDD = [
   '97',
   '98',
   '99',
-]
+];
