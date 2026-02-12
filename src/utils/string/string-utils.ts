@@ -145,4 +145,15 @@ export abstract class StringUtils {
     const finalText = normalizedText.replace(/[\u0300-\u036f]/g, '');
     return finalText;
   }
+
+  /**
+   * Capitalizes the first letter of a string.
+   *
+   * @param str - The input string
+   * @returns The string with the first letter capitalized
+   */
+  static capitalize(str: string): string {
+    if (this.isNotAString(str)) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 }

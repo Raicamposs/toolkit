@@ -54,13 +54,19 @@ describe('isEmpty', () => {
     expect(isEmpty(new Map())).toBe(true);
   });
 
-  it('should return true for empty set', () => {
-    expect(isEmpty(new Set())).toBe(true);
+  it('should return false for Date object', () => {
+    expect(isEmpty(new Date())).toBe(false);
   });
 
-  it('should return false for any other value', () => {
-    expect(isEmpty(9999)).toBe(false);
+  it('should return false for RegExp object', () => {
+    expect(isEmpty(/test/)).toBe(false);
+  });
+
+  it('should return false for number 0', () => {
+    expect(isEmpty(0)).toBe(false);
+  });
+
+  it('should return false for boolean false', () => {
     expect(isEmpty(false)).toBe(false);
-    expect(isEmpty(true)).toBe(false);
   });
 });

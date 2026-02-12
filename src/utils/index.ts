@@ -1,3 +1,4 @@
+export * from './array';
 export * from './async';
 export * from './conditional';
 // Functional utilities
@@ -7,3 +8,4 @@ export * from './number';
 export * from './object';
 export * from './string';
 export * from './validation';
+

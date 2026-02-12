@@ -35,21 +35,21 @@ describe('CompositeBuilder', () => {
   });
 
   describe('Método add', () => {
-    it('deve adicionar um builder function', () => {
+    it('deve retornar uma nova instância com o builder adicionado', () => {
       const builder = CompositeBuilder.new<User>();
       const setName = (user: User) => ({ ...user, name: 'John' });
 
-      const result = builder.add(setName);
+      const newBuilder = builder.add(setName);
 
-      expect(result).toBe(builder); // Retorna this para encadeamento
+      expect(newBuilder).not.toBe(builder);
+      expect(newBuilder).toBeInstanceOf(CompositeBuilder);
     });
 
-    it('deve permitir adicionar múltiplos builders', () => {
-      const builder = CompositeBuilder.new<User>();
+    it('deve permitir adicionar múltiplos builders via encadeamento', () => {
       const setName = (user: User) => ({ ...user, name: 'John' });
       const setAge = (user: User) => ({ ...user, age: 30 });
 
-      builder.add(setName).add(setAge);
+      const builder = CompositeBuilder.new<User>().add(setName).add(setAge);
 
       const initialUser: User = {
         id: 1,
@@ -64,16 +64,6 @@ describe('CompositeBuilder', () => {
 
       expect(result.name).toBe('John');
       expect(result.age).toBe(30);
-    });
-
-    it('deve retornar this para encadeamento fluente', () => {
-      const builder = CompositeBuilder.new<User>();
-      const setName = (user: User) => ({ ...user, name: 'John' });
-      const setAge = (user: User) => ({ ...user, age: 30 });
-
-      const result = builder.add(setName).add(setAge);
-
-      expect(result).toBe(builder);
     });
   });
 
@@ -98,7 +88,7 @@ describe('CompositeBuilder', () => {
       const builder = CompositeBuilder.new<User>();
       const setName = (user: User) => ({ ...user, name: 'Jane' });
 
-      builder.add(setName);
+      const newBuilder = builder.add(setName);
 
       const initialUser: User = {
         id: 1,
@@ -109,19 +99,21 @@ describe('CompositeBuilder', () => {
         role: 'user',
       };
 
-      const result = builder.build(initialUser);
+      const result = newBuilder.build(initialUser);
 
       expect(result.name).toBe('Jane');
-      expect(result.email).toBe('john@example.com'); // Outras propriedades mantidas
+      expect(result.email).toBe('john@example.com');
     });
 
     it('deve aplicar múltiplos builders em sequência', () => {
-      const builder = CompositeBuilder.new<User>();
       const setName = (user: User) => ({ ...user, name: 'Alice' });
       const setAge = (user: User) => ({ ...user, age: 25 });
       const setRole = (user: User) => ({ ...user, role: 'admin' });
 
-      builder.add(setName).add(setAge).add(setRole);
+      const builder = CompositeBuilder.new<User>()
+        .add(setName)
+        .add(setAge)
+        .add(setRole);
 
       const initialUser: User = {
         id: 1,
@@ -145,12 +137,14 @@ describe('CompositeBuilder', () => {
     });
 
     it('deve aplicar builders na ordem em que foram adicionados', () => {
-      const builder = CompositeBuilder.new<User>();
       const setName1 = (user: User) => ({ ...user, name: 'First' });
       const setName2 = (user: User) => ({ ...user, name: 'Second' });
       const setName3 = (user: User) => ({ ...user, name: 'Final' });
 
-      builder.add(setName1).add(setName2).add(setName3);
+      const builder = CompositeBuilder.new<User>()
+        .add(setName1)
+        .add(setName2)
+        .add(setName3);
 
       const initialUser: User = {
         id: 1,
@@ -175,7 +169,7 @@ describe('CompositeBuilder', () => {
         name: 'Admin User',
       });
 
-      builder.add(setAdminUser);
+      const newBuilder = builder.add(setAdminUser);
 
       const initialUser: User = {
         id: 1,
@@ -186,7 +180,7 @@ describe('CompositeBuilder', () => {
         role: 'user',
       };
 
-      const result = builder.build(initialUser);
+      const result = newBuilder.build(initialUser);
 
       expect(result.role).toBe('admin');
       expect(result.isActive).toBe(true);
@@ -197,7 +191,7 @@ describe('CompositeBuilder', () => {
       const builder = CompositeBuilder.new<User>();
       const setName = (user: User) => ({ ...user, name: 'New Name' });
 
-      builder.add(setName);
+      const newBuilder = builder.add(setName);
 
       const initialUser: User = {
         id: 999,
@@ -208,7 +202,7 @@ describe('CompositeBuilder', () => {
         role: 'guest',
       };
 
-      const result = builder.build(initialUser);
+      const result = newBuilder.build(initialUser);
 
       expect(result.id).toBe(999);
       expect(result.email).toBe('unique@example.com');
@@ -221,11 +215,10 @@ describe('CompositeBuilder', () => {
 
   describe('Reutilização do Builder', () => {
     it('deve permitir reutilizar o mesmo builder com diferentes dados iniciais', () => {
-      const builder = CompositeBuilder.new<User>();
       const setActive = (user: User) => ({ ...user, isActive: true });
       const setRole = (user: User) => ({ ...user, role: 'premium' });
 
-      builder.add(setActive).add(setRole);
+      const builder = CompositeBuilder.new<User>().add(setActive).add(setRole);
 
       const user1: User = {
         id: 1,
@@ -261,7 +254,7 @@ describe('CompositeBuilder', () => {
       const builder = CompositeBuilder.new<User>();
       const setName = (user: User) => ({ ...user, name: 'Modified' });
 
-      builder.add(setName);
+      const newBuilder = builder.add(setName);
 
       const original: User = {
         id: 1,
@@ -272,7 +265,7 @@ describe('CompositeBuilder', () => {
         role: 'user',
       };
 
-      const result = builder.build(original);
+      const result = newBuilder.build(original);
 
       expect(original.name).toBe('Original'); // Original não modificado
       expect(result.name).toBe('Modified');
@@ -281,8 +274,6 @@ describe('CompositeBuilder', () => {
 
   describe('Casos de Uso Complexos', () => {
     it('deve funcionar com transformações condicionais', () => {
-      const builder = CompositeBuilder.new<User>();
-
       const upgradeToAdmin = (user: User) => {
         if (user.age >= 21) {
           return { ...user, role: 'admin', isActive: true };
@@ -290,7 +281,7 @@ describe('CompositeBuilder', () => {
         return user;
       };
 
-      builder.add(upgradeToAdmin);
+      const builder = CompositeBuilder.new<User>().add(upgradeToAdmin);
 
       const youngUser: User = {
         id: 1,
@@ -318,8 +309,6 @@ describe('CompositeBuilder', () => {
     });
 
     it('deve funcionar com Products', () => {
-      const builder = CompositeBuilder.new<Product>();
-
       const applyDiscount = (product: Product) => ({
         ...product,
         price: product.price * 0.9, // 10% desconto
@@ -330,7 +319,9 @@ describe('CompositeBuilder', () => {
         inStock: true,
       });
 
-      builder.add(applyDiscount).add(markInStock);
+      const builder = CompositeBuilder.new<Product>()
+        .add(applyDiscount)
+        .add(markInStock);
 
       const product: Product = {
         id: 1,
@@ -347,8 +338,6 @@ describe('CompositeBuilder', () => {
     });
 
     it('deve permitir composição de transformações complexas', () => {
-      const builder = CompositeBuilder.new<User>();
-
       const normalizeEmail = (user: User) => ({
         ...user,
         email: user.email.toLowerCase().trim(),
@@ -364,7 +353,10 @@ describe('CompositeBuilder', () => {
         isActive: true,
       });
 
-      builder.add(normalizeEmail).add(setDefaultRole).add(activateUser);
+      const builder = CompositeBuilder.new<User>()
+        .add(normalizeEmail)
+        .add(setDefaultRole)
+        .add(activateUser);
 
       const user: User = {
         id: 1,
@@ -385,13 +377,14 @@ describe('CompositeBuilder', () => {
 
   describe('Padrões de Design', () => {
     it('deve funcionar como pipeline de transformações', () => {
-      const builder = CompositeBuilder.new<User>();
-
       const step1 = (user: User) => ({ ...user, name: user.name.toUpperCase() });
       const step2 = (user: User) => ({ ...user, email: user.email.toLowerCase() });
       const step3 = (user: User) => ({ ...user, age: user.age + 1 });
 
-      builder.add(step1).add(step2).add(step3);
+      const builder = CompositeBuilder.new<User>()
+        .add(step1)
+        .add(step2)
+        .add(step3);
 
       const user: User = {
         id: 1,
@@ -446,7 +439,7 @@ describe('CompositeBuilder', () => {
       const builder = CompositeBuilder.new<User>();
       const noOp = (user: User) => user;
 
-      builder.add(noOp);
+      const newBuilder = builder.add(noOp);
 
       const user: User = {
         id: 1,
@@ -457,17 +450,16 @@ describe('CompositeBuilder', () => {
         role: 'user',
       };
 
-      const result = builder.build(user);
+      const result = newBuilder.build(user);
 
       expect(result).toEqual(user);
     });
 
     it('deve lidar com valores falsy', () => {
-      const builder = CompositeBuilder.new<User>();
       const setAge = (user: User) => ({ ...user, age: 0 });
       const setName = (user: User) => ({ ...user, name: '' });
 
-      builder.add(setAge).add(setName);
+      const builder = CompositeBuilder.new<User>().add(setAge).add(setName);
 
       const user: User = {
         id: 1,
@@ -485,7 +477,7 @@ describe('CompositeBuilder', () => {
     });
 
     it('deve lidar com objetos vazios', () => {
-      interface EmptyObject {}
+      interface EmptyObject { }
 
       const builder = CompositeBuilder.new<EmptyObject>();
       const result = builder.build({});

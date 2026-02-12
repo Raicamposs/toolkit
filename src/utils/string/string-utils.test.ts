@@ -63,4 +63,13 @@ describe('StringUtils', () => {
     expect(StringUtils.removeAccents('        ')).toEqual('        ');
     expect(StringUtils.removeAccents('')).toEqual('');
   });
+
+  it('should capitalize the first letter', () => {
+    expect(StringUtils.capitalize('hello')).toBe('Hello');
+    expect(StringUtils.capitalize('a')).toBe('A');
+    expect(StringUtils.capitalize('Hello')).toBe('Hello');
+    expect(StringUtils.capitalize('')).toBe('');
+    expect(StringUtils.capitalize(null as any)).toBe(null);
+    expect(StringUtils.capitalize(undefined as any)).toBe(undefined);
+  });
 });

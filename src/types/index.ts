@@ -1,3 +1,5 @@
+export * from './deep-partial';
+export * from './deep-readonly';
 export * from './literal';
 export * from './nullable';
 export * from './object-entries';
@@ -8,3 +10,5 @@ export * from './prettify';
 export * from './replace';
 export * from './require-at-least-one';
 export * from './value-of';
+export * from './writable';
+

@@ -1,16 +1,19 @@
 import { Nullable } from '../types';
 
 export class CPF {
-  private _value: string;
-  static regex = /^\d{3}\.?\d{3}\.?\d{3}\-?\d{2}$/;
+  private readonly _value: string;
+
+  private static readonly CPF_LENGTH = 11;
+  private static readonly CPF_REGEX = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/;
+  private static readonly REPEATED_DIGITS_REGEX = /^(\d)\1+$/;
 
   constructor(value: Nullable<string | number>) {
     const data = (value ?? '').toString();
-    this._value = data.replace(/[^0-9]/gi, '');
+    this._value = CPF.stripNonDigits(data);
   }
 
   get value(): string {
-    return this._value.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+    return this.format(this._value);
   }
 
   get numbersOnly(): string {
@@ -18,7 +21,7 @@ export class CPF {
   }
 
   get isValid(): boolean {
-    return [CPF.regex.test(this._value), CPF.check(this._value)].every(Boolean);
+    return CPF.check(this._value);
   }
 
   get masked(): string {
@@ -26,79 +29,48 @@ export class CPF {
   }
 
   static random(): CPF {
-    const create_array = (total: number, numero: number) =>
-      Array.from(Array(total), () => number_random(numero));
-    const number_random = (number: number) => Math.round(Math.random() * number);
-    const mod = (dividendo: number, divisor: number) =>
-      Math.round(dividendo - Math.floor(dividendo / divisor) * divisor);
+    const randomDigit = () => Math.floor(Math.random() * 9);
+    const digits = Array.from({ length: 9 }, randomDigit);
 
-    const total_array = 9;
-    const n = 9;
-    const [n1, n2, n3, n4, n5, n6, n7, n8, n9] = create_array(total_array, n);
+    const digit1 = CPF.calculateDigit(digits);
+    const digit2 = CPF.calculateDigit([...digits, digit1]);
 
-    let d1 = n9 * 2 + n8 * 3 + n7 * 4 + n6 * 5 + n5 * 6 + n4 * 7 + n3 * 8 + n2 * 9 + n1 * 10;
-    d1 = 11 - mod(d1, 11);
-    if (d1 >= 10) d1 = 0;
-
-    let d2 =
-      d1 * 2 + n9 * 3 + n8 * 4 + n7 * 5 + n6 * 6 + n5 * 7 + n4 * 8 + n3 * 9 + n2 * 10 + n1 * 11;
-    d2 = 11 - mod(d2, 11);
-    if (d2 >= 10) d2 = 0;
-
-    return new CPF(`${n1}${n2}${n3}.${n4}${n5}${n6}.${n7}${n8}${n9}-${d1}${d2}`);
+    const generatedCPF = [...digits, digit1, digit2].join('');
+    return new CPF(generatedCPF);
   }
 
-  static check(value: string | number | undefined): boolean {
-    if (!value) return false;
+  static check(value: string | number | undefined | null): boolean {
+    if (value === undefined || value === null) return false;
 
-    // Aceita receber o valor como string ou número com todos os dígitos
-    const validTypes = typeof value === 'string' || Number.isInteger(value);
+    const stringValue = value.toString();
+    const cleanValue = CPF.stripNonDigits(stringValue);
 
-    // Elimina valores com formato inválido
-    if (!validTypes) return false;
+    if (cleanValue.length !== CPF.CPF_LENGTH) return false;
+    if (CPF.REPEATED_DIGITS_REGEX.test(cleanValue)) return false;
 
-    const numbers = value
-      .toString()
-      .replace(/[^0-9]/gi, '')
-      .split('')
-      .map(Number);
+    const digits = cleanValue.split('').map(Number);
+    const baseDigits = digits.slice(0, 9);
+    const verifierDigits = digits.slice(9);
 
-    if (numbers.length !== 11) return false;
-    if (new Set(numbers).size === 1) return false;
+    const digit1 = CPF.calculateDigit(baseDigits);
+    if (digit1 !== verifierDigits[0]) return false;
 
-    // Separa número base do dígito verificador
-    const base = numbers.slice(0, 9);
-    const digits = numbers.slice(9);
+    const digit2 = CPF.calculateDigit([...baseDigits, digit1]);
+    return digit2 === verifierDigits[1];
+  }
 
-    // Cálculo base
-    const calc = (n: number, i: number, x: number): number => n * (x - i);
+  private static stripNonDigits(value: string): string {
+    return value.replace(/\D/g, '');
+  }
 
-    // Utilitário de soma
-    const sum = (r: number, n: number): number => r + n;
+  private format(value: string): string {
+    return value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
 
-    // Cálculo de dígito verificador
-    const digit = (n: number): number => {
-      const rest = n % numbers.length;
-      return rest < 2 ? 0 : numbers.length - rest;
-    };
-
-    // Cálculo sobre o número base
-    const calc0 = base.map((n, i) => calc(n, i, numbers.length - 1)).reduce(sum, 0);
-    // 1o. dígito verificador
-    const digit0 = digit(calc0);
-
-    // Valida 1o. digito verificador
-    if (digit0 !== digits[0]) return false;
-
-    // Cálculo sobre o número base + 1o. dígito verificador
-    const calc1 = base
-      .concat(digit0)
-      .map((n, i) => calc(n, i, numbers.length))
-      .reduce(sum, 0);
-    // 2o. dígito verificador
-    const digit1 = digit(calc1);
-
-    // Valida 2o. dígito verificador
-    return digit1 === digits[1];
+  private static calculateDigit(digits: number[]): number {
+    const factor = digits.length + 1;
+    const sum = digits.reduce((acc, digit, index) => acc + digit * (factor - index), 0);
+    const remainder = sum % 11;
+    return remainder < 2 ? 0 : 11 - remainder;
   }
 }
