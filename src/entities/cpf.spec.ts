@@ -14,7 +14,7 @@ describe('CPF', function () {
   });
 
   it('should return numbers only', () => {
-    expect(new CPF('123.456.789-09').numbersOnly).toBe('12345678909');
+    expect(new CPF('123.456.789-09').stripped).toBe('12345678909');
   });
 
   it('should return formatted value', () => {

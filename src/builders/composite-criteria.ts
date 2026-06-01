@@ -3,11 +3,14 @@ export interface Criteria<T> {
 }
 
 export class CompositeCriteria<T> implements Criteria<T> {
-  private criteriaList: Criteria<T>[] = [];
+  private readonly criteriaList: Criteria<T>[];
+
+  constructor(criteriaList: Criteria<T>[] = []) {
+    this.criteriaList = criteriaList;
+  }
 
   add(criteria: Criteria<T>): CompositeCriteria<T> {
-    this.criteriaList.push(criteria);
-    return this;
+    return new CompositeCriteria<T>([...this.criteriaList, criteria]);
   }
 
   matching(data: T[]): T[] {

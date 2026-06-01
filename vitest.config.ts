@@ -2,19 +2,27 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    include: ['src/**/*.{test,spec}.ts'],
+    testTimeout: 5000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 70,
+        statements: 80,
+      },
       exclude: [
         '**/node_modules/**',
         '**/dist/**',
         '**/coverage/**',
         '**/*.config.*',
-        '**/index.ts',           // Ignora todos os index.ts
-        '**/index.js',           // Ignora todos os index.js
-        '**/*.test.ts',          // Ignora arquivos de teste
-        '**/*.spec.ts',          // Ignora arquivos de spec
-        '**/*.d.ts',             // Ignora arquivos de declaração
+        '**/index.ts',
+        '**/index.js',
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        '**/*.d.ts',
       ],
     },
   },

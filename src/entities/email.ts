@@ -22,15 +22,15 @@ export class Email {
   }
 
   get username(): string {
-    return this._value.split('@')[0];
+    return this._value.split('@')[0] as string;
   }
 
   get domain(): string {
-    return this._value.split('@')[1];
+    return this._value.split('@')[1] as string;
   }
 
   get isValid(): boolean {
-    return Email.REGEX.test(this._value);
+    return true; // Already validated in constructor
   }
 
   static random(): Email {
@@ -43,25 +43,20 @@ export class Email {
       return false;
     }
 
-    if (!value.match(Email.REGEX)) {
+    if (!(value as string).match(Email.REGEX)) {
       return false;
     }
     return true;
   }
 
   static fromString(text: string | null | undefined): Array<Email> {
-    if (isNullOrUndefined(text)) {
-      return Array<Email>();
+    if (isNullOrUndefined(text) || isEmpty(text)) {
+      return [];
     }
 
-    if (isEmpty(text)) {
-      return Array<Email>();
-    }
-
-    const parts = text.split(';');
+    const parts = (text as string).split(';');
     return parts.reduce((acc, part) => {
       if (Email.check(part)) acc.push(new Email(part.trim()));
-
       return acc;
     }, Array<Email>());
   }

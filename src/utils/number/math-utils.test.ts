@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MathUtils } from './math-ultils';
+import { MathUtils } from './math-utils';
 describe('MathUtils', () => {
   describe('calculatePercentage', () => {
     it('should calculate the percentage correctly', () => {

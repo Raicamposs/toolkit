@@ -1,9 +1,21 @@
 {
   "name": "@raicamposs/toolkit",
   "version": "1.1.0",
-  "description": "Um pacote npm com TypeScript.",
+  "description": "Utilitários TypeScript para validação, transformação e manipulação de dados.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "version": "npm version patch",
     "build": "tsc",
@@ -15,8 +27,20 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json,md}\""
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "typescript",
+    "utilities",
+    "cpf",
+    "cnpj",
+    "validation",
+    "string",
+    "brazilian"
+  ],
+  "author": "Raian Campos",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raicamposs/toolkit"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.0.3",

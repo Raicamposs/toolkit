@@ -11,26 +11,26 @@ describe('Phone', () => {
     const phone = new Phone('1198765432');
     expect(phone.value).toBe('(11)9876-5432');
     expect(phone.toString()).toBe('(11)9876-5432');
-    expect(phone.numbersOnly).toBe('1198765432');
+    expect(phone.stripped).toBe('1198765432');
   });
 
   it('should format 11-digit numbers correctly', () => {
     const phone = new Phone('11998765432');
     expect(phone.value).toBe('(11)99876-5432');
     expect(phone.toString()).toBe('(11)99876-5432');
-    expect(phone.numbersOnly).toBe('11998765432');
+    expect(phone.stripped).toBe('11998765432');
   });
 
   it('should remove non-numeric characters', () => {
     const phone = new Phone('(11) 99876-5432');
-    expect(phone.numbersOnly).toBe('11998765432');
+    expect(phone.stripped).toBe('11998765432');
     expect(phone.value).toBe('(11)99876-5432');
   });
 
   it('should handle empty input', () => {
     const phone = new Phone('');
     expect(phone.value).toBe('');
-    expect(phone.numbersOnly).toBe('');
+    expect(phone.stripped).toBe('');
     expect(phone.isValid).toBe(false);
   });
 
@@ -61,7 +61,7 @@ describe('Phone', () => {
     const phone = Phone.random();
     expect(phone).toBeInstanceOf(Phone);
     expect(phone.isValid).toBe(true);
-    expect(phone.numbersOnly.length).toBeGreaterThanOrEqual(10);
-    expect(phone.numbersOnly.length).toBeLessThanOrEqual(11);
+    expect(phone.stripped.length).toBeGreaterThanOrEqual(10);
+    expect(phone.stripped.length).toBeLessThanOrEqual(11);
   });
 });

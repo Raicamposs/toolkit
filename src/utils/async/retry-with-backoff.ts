@@ -19,4 +19,6 @@ export const retryBackoffExponencial = async <T>({ fn, maxRetries, delay }: Para
       await sleep(delay * Math.pow(2, i));
     }
   }
+
+  throw new Error('Unreachable code reached in retryBackoffExponencial');
 };

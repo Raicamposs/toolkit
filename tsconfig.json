@@ -6,6 +6,10 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,6 +20,7 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ]
 }

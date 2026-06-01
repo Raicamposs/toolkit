@@ -16,7 +16,7 @@ export class CPF {
     return this.format(this._value);
   }
 
-  get numbersOnly(): string {
+  get stripped(): string {
     return this._value;
   }
 

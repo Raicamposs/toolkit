@@ -48,13 +48,13 @@ describe('CompositeCriteria', () => {
   ];
 
   describe('add', () => {
-    it('deve adicionar um critério e retornar this para encadeamento', () => {
+    it('deve adicionar um critério e retornar uma nova instância para encadeamento', () => {
       const composite = new CompositeCriteria<Person>();
       const ageCriteria = new AgeCriteria(18);
 
       const result = composite.add(ageCriteria);
 
-      expect(result).toBe(composite);
+      expect(result).not.toBe(composite);
     });
 
     it('deve permitir adicionar múltiplos critérios via encadeamento', () => {
@@ -64,7 +64,7 @@ describe('CompositeCriteria', () => {
 
       const result = composite.add(ageCriteria).add(activeCriteria);
 
-      expect(result).toBe(composite);
+      expect(result).not.toBe(composite);
     });
   });
 
@@ -82,8 +82,8 @@ describe('CompositeCriteria', () => {
       const composite = new CompositeCriteria<Person>();
       const ageCriteria = new AgeCriteria(18);
 
-      composite.add(ageCriteria);
-      const result = composite.matching(people);
+      const newComposite = composite.add(ageCriteria);
+      const result = newComposite.matching(people);
 
       expect(result).toHaveLength(3);
       expect(result.map((p) => p.name)).toEqual(['Alice', 'Charlie', 'Diana']);
@@ -94,8 +94,8 @@ describe('CompositeCriteria', () => {
       const ageCriteria = new AgeCriteria(18);
       const activeCriteria = new ActiveCriteria();
 
-      composite.add(ageCriteria).add(activeCriteria);
-      const result = composite.matching(people);
+      const newComposite = composite.add(ageCriteria).add(activeCriteria);
+      const result = newComposite.matching(people);
 
       // Deve retornar apenas pessoas com idade >= 18 E ativas
       expect(result).toHaveLength(2);
@@ -108,8 +108,8 @@ describe('CompositeCriteria', () => {
       const activeCriteria = new ActiveCriteria();
       const premiumCriteria = new PremiumCriteria();
 
-      composite.add(ageCriteria).add(activeCriteria).add(premiumCriteria);
-      const result = composite.matching(people);
+      const newComposite = composite.add(ageCriteria).add(activeCriteria).add(premiumCriteria);
+      const result = newComposite.matching(people);
 
       // Deve retornar apenas pessoas com idade >= 18 E ativas E premium
       expect(result).toHaveLength(2);
@@ -120,8 +120,8 @@ describe('CompositeCriteria', () => {
       const composite = new CompositeCriteria<Person>();
       const ageCriteria = new AgeCriteria(100); // Ninguém tem 100 anos
 
-      composite.add(ageCriteria);
-      const result = composite.matching(people);
+      const newComposite = composite.add(ageCriteria);
+      const result = newComposite.matching(people);
 
       expect(result).toEqual([]);
     });
@@ -130,8 +130,8 @@ describe('CompositeCriteria', () => {
       const composite = new CompositeCriteria<Person>();
       const ageCriteria = new AgeCriteria(18);
 
-      composite.add(ageCriteria);
-      const result = composite.matching([]);
+      const newComposite = composite.add(ageCriteria);
+      const result = newComposite.matching([]);
 
       expect(result).toEqual([]);
     });
@@ -141,8 +141,8 @@ describe('CompositeCriteria', () => {
       const nameCriteria = new NameCriteria('Alice');
       const ageCriteria = new AgeCriteria(18);
 
-      composite.add(nameCriteria).add(ageCriteria);
-      const result = composite.matching(people);
+      const newComposite = composite.add(nameCriteria).add(ageCriteria);
+      const result = newComposite.matching(people);
 
       // Primeiro filtra por nome (Alice), depois por idade (>= 18)
       expect(result).toHaveLength(1);
@@ -156,10 +156,10 @@ describe('CompositeCriteria', () => {
       const ageCriteria = new AgeCriteria(18);
       const activeCriteria = new ActiveCriteria();
 
-      composite.add(ageCriteria).add(activeCriteria);
+      const newComposite = composite.add(ageCriteria).add(activeCriteria);
 
-      const result1 = composite.matching(people);
-      const result2 = composite.matching(people.slice(0, 3));
+      const result1 = newComposite.matching(people);
+      const result2 = newComposite.matching(people.slice(0, 3));
 
       expect(result1).toHaveLength(2);
       expect(result2).toHaveLength(1);
@@ -194,9 +194,9 @@ describe('CompositeCriteria', () => {
       ];
 
       const composite = new CompositeCriteria<Product>();
-      composite.add(new PriceCriteria(500)).add(new InStockCriteria());
+      const newComposite = composite.add(new PriceCriteria(500)).add(new InStockCriteria());
 
-      const result = composite.matching(products);
+      const result = newComposite.matching(products);
 
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe('Mouse');
@@ -294,9 +294,9 @@ describe('OrCriteria', () => {
 
       // Composite: (idade >= 20 OU premium) E ativo
       const composite = new CompositeCriteria<Person>();
-      composite.add(orCriteria).add(new ActiveCriteria());
+      const newComposite = composite.add(orCriteria).add(new ActiveCriteria());
 
-      const result = composite.matching(people);
+      const result = newComposite.matching(people);
 
       // Deve retornar pessoas que são (idade >= 20 OU premium) E ativas
       expect(result).toHaveLength(2);
@@ -312,9 +312,9 @@ describe('OrCriteria', () => {
 
       // Composite: (jovem OU premium) E ativo
       const composite = new CompositeCriteria<Person>();
-      composite.add(orCriteria).add(new ActiveCriteria());
+      const newComposite = composite.add(orCriteria).add(new ActiveCriteria());
 
-      const result = composite.matching(people);
+      const result = newComposite.matching(people);
 
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name).sort()).toEqual(['Alice', 'Diana']);

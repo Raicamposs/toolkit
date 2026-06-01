@@ -22,6 +22,17 @@ export abstract class StringUtils {
     return value === null || value === undefined || typeof value !== 'string' || value.length === 0;
   }
 
+  private static normalizeCase(str: string, separator: string): string {
+    return str
+      .replace(/\s+/g, separator)
+      .replace(/([A-Z])/g, `${separator}$1`)
+      .replace(new RegExp(`[^a-zA-Z0-9${separator}]+`, 'g'), '')
+      .toLowerCase()
+      .replace(new RegExp(`^${separator}`), '')
+      .replace(new RegExp(`${separator}{2,}`, 'g'), separator)
+      .trim();
+  }
+
   /**
    * Converts a string to snake_case format.
    *
@@ -34,14 +45,7 @@ export abstract class StringUtils {
    */
   static toSnakeCase(str: string): string {
     if (this.isNotAString(str)) return str;
-    return str
-      .replace(/\s+/g, '_') // 1. Substitui espaços por underscores
-      .replace(/([A-Z])/g, '_$1') // 2. Adiciona underscore antes de letras maiúsculas
-      .replace(/[^a-zA-Z0-9_]+/g, '') // 3. Remove caracteres que não são letras, números ou underscores
-      .toLowerCase() // 4. Converte toda a string para minúsculas
-      .replace(/^_/, '') // 5. Remove underscore inicial, se houver
-      .replace(/_{2,}/g, '_')
-      .trim();
+    return this.normalizeCase(str, '_');
   }
 
   /**
@@ -56,14 +60,7 @@ export abstract class StringUtils {
    */
   static toKebabCase(str: string): string {
     if (this.isNotAString(str)) return str;
-    return str
-      .replace(/\s+/g, '-') // 1. Substitui espaços por hífens
-      .replace(/([A-Z])/g, '-$1') // 2. Adiciona hífen antes de letras maiúsculas
-      .replace(/[^a-zA-Z0-9-]+/g, '') // 3. Remove caracteres que não são letras, números ou hífens
-      .toLowerCase() // 4. Converte toda a string para minúsculas
-      .replace(/^-/, '') // 5. Remove hífen inicial, se houver
-      .replace(/-{2,}/g, '-')
-      .trim();
+    return this.normalizeCase(str, '-');
   }
 
   /**

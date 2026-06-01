@@ -14,7 +14,7 @@ describe('CNPJ', function () {
   });
 
   it('should return numbers only', () => {
-    expect(new CNPJ('01.103.144/0001-36').numbersOnly).toBe('01103144000136');
+    expect(new CNPJ('01.103.144/0001-36').stripped).toBe('01103144000136');
   });
 
   it('should return formatted value', () => {
@@ -72,6 +72,17 @@ describe('CNPJ', function () {
 
     expect(CNPJ.check(35139348000149)).toBe(true);
     expect(CNPJ.check(27096175000109)).toBe(true);
+  });
+
+  it('Deve validar CNPJ alfanumérico (nova regra)', () => {
+    // Exemplo gerado: 12.ABC.345/01DE-35
+    expect(CNPJ.check('12.ABC.345/01DE-35')).toBe(true);
+    expect(CNPJ.check('12ABC34501DE35')).toBe(true);
+
+    // O mesmo CNPJ com letras minúsculas deve ser validado (normalização interna)
+    expect(CNPJ.check('12.abc.345/01de-35')).toBe(true);
+    expect(new CNPJ('12.abc.345/01de-35').isValid).toBe(true);
+    expect(new CNPJ('12.abc.345/01de-35').stripped).toBe('12ABC34501DE35');
   });
 
   it('Deve rejeitar', () => {
