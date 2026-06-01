@@ -1,15 +1,15 @@
-# @raicamposs/toolkit
+# @raicampos/toolkit
 
 > 🛠️ A comprehensive TypeScript utility library with type-safe helpers for modern development
 
-[![npm version](https://img.shields.io/npm/v/@raicamposs/toolkit.svg)](https://www.npmjs.com/package/@raicamposs/toolkit)
+[![npm version](https://img.shields.io/npm/v/@raicampos/toolkit.svg)](https://www.npmjs.com/package/@raicampos/toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 
 ## 📦 Installation
 
 ```bash
-npm install @raicamposs/toolkit
+npm install @raicampos/toolkit
 ```
 
 ## 🎯 Features
@@ -46,7 +46,7 @@ Utilities for asynchronous operations and timing control.
 Pauses execution for a specified duration.
 
 ```typescript
-import { sleep } from '@raicamposs/toolkit';
+import { sleep } from '@raicampos/toolkit';
 
 await sleep(1000); // Wait 1 second
 console.log('1 second later');
@@ -57,7 +57,7 @@ console.log('1 second later');
 Retries a function with exponential backoff on failure.
 
 ```typescript
-import { retryWithBackoff } from '@raicamposs/toolkit';
+import { retryWithBackoff } from '@raicampos/toolkit';
 
 const result = await retryWithBackoff({
   fn: async () => fetchData(),
@@ -83,7 +83,7 @@ Functional programming patterns and helpers.
 Type-safe error handling without exceptions.
 
 ```typescript
-import { Either, Left, Right } from '@raicamposs/toolkit';
+import { Either, Left, Right } from '@raicampos/toolkit';
 
 function divide(a: number, b: number): Either<string, number> {
   if (b === 0) {
@@ -105,7 +105,7 @@ if (result.isRight()) {
 Maps a value through a function, returning a default if null/undefined.
 
 ```typescript
-import { mapOr } from '@raicamposs/toolkit';
+import { mapOr } from '@raicampos/toolkit';
 
 const user = { name: 'John' };
 const upperName = mapOr(user.name, (n) => n.toUpperCase(), 'UNKNOWN');
@@ -120,7 +120,7 @@ const noName = mapOr(null, (n) => n.toUpperCase(), 'UNKNOWN');
 Maps all items in an array, returning default if array is null/undefined.
 
 ```typescript
-import { mapAllOr } from '@raicamposs/toolkit';
+import { mapAllOr } from '@raicampos/toolkit';
 
 const numbers = [1, 2, 3];
 const doubled = mapAllOr(numbers, (n) => n * 2, []);
@@ -132,7 +132,7 @@ const doubled = mapAllOr(numbers, (n) => n * 2, []);
 Predicate function type for composable specifications.
 
 ```typescript
-import { SpecOf } from '@raicamposs/toolkit';
+import { SpecOf } from '@raicampos/toolkit';
 
 interface User {
   age: number;
@@ -148,7 +148,7 @@ const isPremium: SpecOf<User> = (user) => user.isPremium;
 Combines multiple specs with AND logic - returns true only if all specs are satisfied.
 
 ```typescript
-import { and, SpecOf } from '@raicamposs/toolkit';
+import { and, SpecOf } from '@raicampos/toolkit';
 
 const isAdult: SpecOf<User> = (user) => user.age >= 18;
 const isPremium: SpecOf<User> = (user) => user.isPremium;
@@ -165,7 +165,7 @@ isAdultPremium({ age: 16, isPremium: true }); // false
 Combines multiple specs with OR logic - returns true if at least one spec is satisfied.
 
 ```typescript
-import { or, SpecOf } from '@raicamposs/toolkit';
+import { or, SpecOf } from '@raicampos/toolkit';
 
 const isAdult: SpecOf<User> = (user) => user.age >= 18;
 const isPremium: SpecOf<User> = (user) => user.isPremium;
@@ -182,7 +182,7 @@ canAccess({ age: 16, isPremium: false }); // false
 Negates a specification.
 
 ```typescript
-import { not, SpecOf } from '@raicamposs/toolkit';
+import { not, SpecOf } from '@raicampos/toolkit';
 
 const isAdult: SpecOf<User> = (user) => user.age >= 18;
 const isMinor = not(isAdult);
@@ -194,7 +194,7 @@ isMinor({ age: 25 }); // false
 **Complex Composition Example:**
 
 ```typescript
-import { and, or, not, SpecOf } from '@raicamposs/toolkit';
+import { and, or, not, SpecOf } from '@raicampos/toolkit';
 
 interface User {
   age: number;
@@ -223,7 +223,7 @@ const filtered = users.filter(complexRule);
 Creates a predicate that checks if a boolean property is true.
 
 ```typescript
-import { isFlagged } from '@raicamposs/toolkit';
+import { isFlagged } from '@raicampos/toolkit';
 
 interface User {
   isActive: boolean;
@@ -248,7 +248,7 @@ const activeUsers = users.filter(isActiveUser);
 Creates a specification that checks if a date property is within a specified time window.
 
 ```typescript
-import { recent } from '@raicamposs/toolkit';
+import { recent } from '@raicampos/toolkit';
 
 interface User {
   id: number;
@@ -301,7 +301,7 @@ Type checking and validation helpers.
 Checks if a value is not null or undefined.
 
 ```typescript
-import { isAssigned } from '@raicamposs/toolkit';
+import { isAssigned } from '@raicampos/toolkit';
 
 isAssigned(0); // true
 isAssigned(''); // true
@@ -315,7 +315,7 @@ isAssigned(undefined); // false
 Checks if a value is strictly null.
 
 ```typescript
-import { isNull } from '@raicamposs/toolkit';
+import { isNull } from '@raicampos/toolkit';
 
 isNull(null); // true
 isNull(undefined); // false
@@ -327,7 +327,7 @@ isNull(0); // false
 Checks if a value is strictly undefined.
 
 ```typescript
-import { isUndefined } from '@raicamposs/toolkit';
+import { isUndefined } from '@raicampos/toolkit';
 
 isUndefined(undefined); // true
 isUndefined(null); // false
@@ -338,7 +338,7 @@ isUndefined(null); // false
 Checks if a value is null or undefined.
 
 ```typescript
-import { isNullOrUndefined } from '@raicamposs/toolkit';
+import { isNullOrUndefined } from '@raicampos/toolkit';
 
 isNullOrUndefined(null); // true
 isNullOrUndefined(undefined); // true
@@ -350,7 +350,7 @@ isNullOrUndefined(0); // false
 Checks if a value is empty (null, undefined, empty string, or empty array).
 
 ```typescript
-import { isEmpty } from '@raicamposs/toolkit';
+import { isEmpty } from '@raicampos/toolkit';
 
 isEmpty(''); // true
 isEmpty([]); // true
@@ -370,7 +370,7 @@ Object manipulation and transformation helpers.
 Deep clones an object.
 
 ```typescript
-import { clone } from '@raicamposs/toolkit';
+import { clone } from '@raicampos/toolkit';
 
 const original = { name: 'John', address: { city: 'NYC' } };
 const copy = clone(original);
@@ -384,7 +384,7 @@ console.log(original.address.city); // 'NYC' (unchanged)
 Creates a new object with only specified keys.
 
 ```typescript
-import { pickKeys } from '@raicamposs/toolkit';
+import { pickKeys } from '@raicampos/toolkit';
 
 const user = { id: 1, name: 'John', email: 'john@example.com', age: 30 };
 const publicData = pickKeys(user, 'id', 'name');
@@ -396,7 +396,7 @@ const publicData = pickKeys(user, 'id', 'name');
 Creates a new object excluding specified keys.
 
 ```typescript
-import { withoutKey } from '@raicamposs/toolkit';
+import { withoutKey } from '@raicampos/toolkit';
 
 const user = { id: 1, name: 'John', password: 'secret' };
 const safeUser = withoutKey(user, 'password');
@@ -408,7 +408,7 @@ const safeUser = withoutKey(user, 'password');
 Recursively removes null and undefined values from objects and arrays.
 
 ```typescript
-import { purgeNullishValues } from '@raicamposs/toolkit';
+import { purgeNullishValues } from '@raicampos/toolkit';
 
 const data = {
   name: 'John',
@@ -428,7 +428,7 @@ const cleaned = purgeNullishValues(data);
 Checks if an object has only unassigned (null or undefined) properties.
 
 ```typescript
-import { hasOnlyUnassignedProperties } from '@raicamposs/toolkit';
+import { hasOnlyUnassignedProperties } from '@raicampos/toolkit';
 
 hasOnlyUnassignedProperties({ name: 'John', age: 30 }); // false
 hasOnlyUnassignedProperties({ name: 'John', age: null }); // false
@@ -441,7 +441,7 @@ hasOnlyUnassignedProperties({}); // true
 Checks if an object has some assigned properties.
 
 ```typescript
-import { hasSomePropertyAssigned } from '@raicamposs/toolkit';
+import { hasSomePropertyAssigned } from '@raicampos/toolkit';
 
 hasSomePropertyAssigned({ name: 'John', age: null }); // true
 hasSomePropertyAssigned({ name: null, age: null }); // false
@@ -458,7 +458,7 @@ String transformation and manipulation utilities.
 Converts a string to snake_case.
 
 ```typescript
-import { StringUtils } from '@raicamposs/toolkit';
+import { StringUtils } from '@raicampos/toolkit';
 
 StringUtils.toSnakeCase('helloWorld'); // 'hello_world'
 StringUtils.toSnakeCase('HelloWorld'); // 'hello_world'
@@ -470,7 +470,7 @@ StringUtils.toSnakeCase('hello-world'); // 'hello_world'
 Converts a string to kebab-case.
 
 ```typescript
-import { StringUtils } from '@raicamposs/toolkit';
+import { StringUtils } from '@raicampos/toolkit';
 
 StringUtils.toKebabCase('helloWorld'); // 'hello-world'
 StringUtils.toKebabCase('HelloWorld'); // 'hello-world'
@@ -481,7 +481,7 @@ StringUtils.toKebabCase('HelloWorld'); // 'hello-world'
 Converts a string to camelCase.
 
 ```typescript
-import { StringUtils } from '@raicamposs/toolkit';
+import { StringUtils } from '@raicampos/toolkit';
 
 StringUtils.toCamelCase('hello_world'); // 'helloWorld'
 StringUtils.toCamelCase('hello-world'); // 'helloWorld'
@@ -492,7 +492,7 @@ StringUtils.toCamelCase('hello-world'); // 'helloWorld'
 Converts a string to Title Case.
 
 ```typescript
-import { StringUtils } from '@raicamposs/toolkit';
+import { StringUtils } from '@raicampos/toolkit';
 
 StringUtils.toTitleCase('hello world'); // 'Hello World'
 StringUtils.toTitleCase('HELLO WORLD'); // 'Hello World'
@@ -503,7 +503,7 @@ StringUtils.toTitleCase('HELLO WORLD'); // 'Hello World'
 Creates a URL-friendly slug from text.
 
 ```typescript
-import { StringUtils } from '@raicamposs/toolkit';
+import { StringUtils } from '@raicampos/toolkit';
 
 StringUtils.slugify('Hello World!'); // 'hello-world'
 StringUtils.slugify('Café au Lait'); // 'cafe-au-lait'
@@ -515,7 +515,7 @@ StringUtils.slugify('Hello World', '_'); // 'hello_world'
 Removes accents from characters.
 
 ```typescript
-import { StringUtils } from '@raicamposs/toolkit';
+import { StringUtils } from '@raicampos/toolkit';
 
 StringUtils.removeAccents('Olá, José!'); // 'Ola, Jose!'
 StringUtils.removeAccents('Café'); // 'Cafe'
@@ -532,7 +532,7 @@ Number formatting and rounding utilities.
 Rounds numbers following ABNT (Brazilian) standards.
 
 ```typescript
-import { roundABNT } from '@raicamposs/toolkit';
+import { roundABNT } from '@raicampos/toolkit';
 
 roundABNT(1.335, 2); // 1.34 (rounds up when last digit is 5 followed by non-zero)
 roundABNT(1.345, 2); // 1.34 (rounds to nearest even when 5 followed by zeros)
@@ -556,7 +556,7 @@ Safe JSON parsing and stringification.
 Safely converts an object to JSON string.
 
 ```typescript
-import { JSONConverter } from '@raicamposs/toolkit';
+import { JSONConverter } from '@raicampos/toolkit';
 
 JSONConverter.stringify({ name: 'John' }); // '{"name":"John"}'
 JSONConverter.stringify(null); // null
@@ -568,7 +568,7 @@ JSONConverter.stringify(undefined); // null
 Safely parses JSON string.
 
 ```typescript
-import { JSONConverter } from '@raicamposs/toolkit';
+import { JSONConverter } from '@raicampos/toolkit';
 
 JSONConverter.parse('{"name":"John"}'); // { name: 'John' }
 JSONConverter.parse('invalid json'); // undefined
@@ -581,7 +581,7 @@ JSONConverter.parse(''); // undefined
 Parses JSON with a fallback default value.
 
 ```typescript
-import { JSONConverter } from '@raicamposs/toolkit';
+import { JSONConverter } from '@raicampos/toolkit';
 
 JSONConverter.parseWithDefault('{"name":"John"}', {}); // { name: 'John' }
 JSONConverter.parseWithDefault('invalid', { name: 'Default' }); // { name: 'Default' }
@@ -599,7 +599,7 @@ Conditional value helpers and null coalescing.
 Returns the first non-null, non-undefined value.
 
 ```typescript
-import { coalesce } from '@raicamposs/toolkit';
+import { coalesce } from '@raicampos/toolkit';
 
 coalesce(null, undefined, 'hello', 'world'); // 'hello'
 coalesce(null, undefined); // undefined
@@ -611,7 +611,7 @@ coalesce(0, null, 5); // 0 (0 is valid)
 Returns null if condition is true, otherwise returns the value.
 
 ```typescript
-import { nullIf } from '@raicamposs/toolkit';
+import { nullIf } from '@raicampos/toolkit';
 
 nullIf('hello', true); // null
 nullIf('hello', false); // 'hello'
@@ -623,7 +623,7 @@ nullIf(42, 42 === 0); // 42
 Returns undefined if condition is true, otherwise returns the value.
 
 ```typescript
-import { undefinedIf } from '@raicamposs/toolkit';
+import { undefinedIf } from '@raicampos/toolkit';
 
 undefinedIf('hello', true); // undefined
 undefinedIf('hello', false); // 'hello'
@@ -640,7 +640,7 @@ TypeScript type helpers for better type safety.
 Represents a value that can be null or undefined.
 
 ```typescript
-import { Nullable } from '@raicamposs/toolkit';
+import { Nullable } from '@raicampos/toolkit';
 
 const name: Nullable<string> = null; // OK
 const age: Nullable<number> = undefined; // OK
@@ -652,7 +652,7 @@ const active: Nullable<boolean> = true; // OK
 Makes specific properties of a type optional.
 
 ```typescript
-import { Optional } from '@raicamposs/toolkit';
+import { Optional } from '@raicampos/toolkit';
 
 interface User {
   id: number;
@@ -669,7 +669,7 @@ type UserWithOptionalEmail = Optional<User, 'email'>;
 Requires at least one property from a type to be defined.
 
 ```typescript
-import { RequireAtLeastOne } from '@raicamposs/toolkit';
+import { RequireAtLeastOne } from '@raicampos/toolkit';
 
 interface Contact {
   email: string;
@@ -704,7 +704,7 @@ Builder patterns for constructing complex objects.
 Fluent builder for applying transformations to objects.
 
 ```typescript
-import { CompositeBuilder } from '@raicamposs/toolkit';
+import { CompositeBuilder } from '@raicampos/toolkit';
 
 interface User {
   name: string;
@@ -729,7 +729,7 @@ const user = builder.build({
 Composite pattern for building complex filtering logic.
 
 ```typescript
-import { CompositeCriteria, OrCriteria, Criteria } from '@raicamposs/toolkit';
+import { CompositeCriteria, OrCriteria, Criteria } from '@raicampos/toolkit';
 
 class AgeCriteria implements Criteria<User> {
   matching(users: User[]): User[] {
@@ -763,7 +763,7 @@ Domain entities with built-in validation.
 Brazilian CPF (Cadastro de Pessoas Físicas) validation and formatting.
 
 ```typescript
-import { CPF } from '@raicamposs/toolkit';
+import { CPF } from '@raicampos/toolkit';
 
 const cpf = CPF.create('12345678909');
 if (cpf.isRight()) {
@@ -777,7 +777,7 @@ if (cpf.isRight()) {
 Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica) validation and formatting.
 
 ```typescript
-import { CNPJ } from '@raicamposs/toolkit';
+import { CNPJ } from '@raicampos/toolkit';
 
 const cnpj = CNPJ.create('12345678000195');
 if (cnpj.isRight()) {
@@ -791,7 +791,7 @@ if (cnpj.isRight()) {
 Email validation entity.
 
 ```typescript
-import { Email } from '@raicamposs/toolkit';
+import { Email } from '@raicampos/toolkit';
 
 const email = Email.create('user@example.com');
 if (email.isRight()) {
@@ -804,7 +804,7 @@ if (email.isRight()) {
 Brazilian phone number validation and formatting.
 
 ```typescript
-import { Phone } from '@raicamposs/toolkit';
+import { Phone } from '@raicampos/toolkit';
 
 const phone = Phone.create('11987654321');
 if (phone.isRight()) {
