@@ -1,16 +1,25 @@
 import { Nullable } from '../../types/nullable';
 import { isNullOrUndefined } from '../validation';
 
-export const numberParse = (value: Nullable<number | string>): Nullable<number> => {
-  if (isNullOrUndefined(value)) return value;
-  if (
+interface Convertible {
+  toNumber(): number;
+}
+
+function isConvertible(value: unknown): value is Convertible {
+  return (
     typeof value === 'object' &&
-    'toNumber' in (value as any) &&
-    typeof (value as any).toNumber === 'function'
-  ) {
+    value !== null &&
+    'toNumber' in value &&
+    typeof (value as Convertible).toNumber === 'function'
+  );
+}
+
+export const numberParse = (value: Nullable<number | string | Convertible>): Nullable<number> => {
+  if (isNullOrUndefined(value)) return value;
+  if (isConvertible(value)) {
     try {
-      return (value as any).toNumber();
-    } catch (e) {
+      return value.toNumber();
+    } catch {
       return Number.NaN;
     }
   }
@@ -18,22 +27,18 @@ export const numberParse = (value: Nullable<number | string>): Nullable<number> 
   if (Number.isNaN(parsed)) return undefined;
   return parsed;
 };
+
 export const numberParseDef = (
-  value: Nullable<number | string>,
+  value: Nullable<number | string | Convertible>,
   defaultValue = 0
 ): Nullable<number> => {
   if (isNullOrUndefined(value)) {
     return defaultValue;
   }
-
-  if (
-    typeof value === 'object' &&
-    'toNumber' in (value as any) &&
-    typeof (value as any).toNumber === 'function'
-  ) {
+  if (isConvertible(value)) {
     try {
-      return (value as any).toNumber();
-    } catch (e) {
+      return value.toNumber();
+    } catch {
       return defaultValue;
     }
   }

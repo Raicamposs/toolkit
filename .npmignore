@@ -22,3 +22,7 @@ dist/**/*.test.js
 dist/**/*.test.d.ts
 dist/**/*.spec.js
 dist/**/*.spec.d.ts
+
+# AI
+.agent/
+.claude/

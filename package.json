@@ -1,6 +1,6 @@
 {
   "name": "@raicampos/toolkit",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Utilitários TypeScript para validação, transformação e manipulação de dados.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,7 +27,14 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,md}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,md}\"",
+    "commit": "cz",
+    "prepare": "husky"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "keywords": [
     "typescript",
@@ -49,9 +56,12 @@
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "@vitest/coverage-v8": "^3.2.4",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
     "prettier": "^3.8.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.54.0",

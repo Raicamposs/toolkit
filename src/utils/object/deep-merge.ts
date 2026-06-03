@@ -7,27 +7,27 @@ import { isObject } from '../validation/is-object';
  * @param source - The source object
  * @returns The merged object
  */
-export function deepMerge<T extends object, U extends object>(target: T, source: U): T & U {
-  const output = { ...target } as any;
+export function deepMerge<T extends Record<string, unknown>, U extends Record<string, unknown>>(
+  target: T,
+  source: U,
+): T & U {
+  const output = { ...target } as T & U;
 
   if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach((key) => {
-      const k = key as keyof U;
-      if (isObject(source[k])) {
-        if (!(k in target)) {
-          Object.assign(output, { [k]: source[k] });
-        } else {
+    for (const key of Object.keys(source)) {
+      const sourceVal = source[key];
+      const targetVal = (target as Record<string, unknown>)[key];
 
-          // @ts-ignore
-          output[k] = deepMerge(target[k as keyof T], source[k]);
-        }
+      if (isObject(sourceVal) && isObject(targetVal)) {
+        (output as Record<string, unknown>)[key] = deepMerge(
+          targetVal as Record<string, unknown>,
+          sourceVal as Record<string, unknown>,
+        );
       } else {
-        Object.assign(output, { [k]: source[k] });
+        (output as Record<string, unknown>)[key] = sourceVal;
       }
-    });
+    }
   }
 
   return output;
 }
-
-

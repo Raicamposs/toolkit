@@ -37,6 +37,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['node_modules/**', 'dist/**', 'coverage/**', '*.config.js', '*.config.mjs'],
+    ignores: ['node_modules/**', 'dist/**', 'coverage/**', '*.config.js', '*.config.mjs', '.agent/**', '.claude/**', 'commitlint.config.mjs'],
   }
 );

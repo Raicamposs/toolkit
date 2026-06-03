@@ -1,7 +1,13 @@
+export * from './is-array';
 export * from './is-assigned';
+export * from './is-boolean';
+export * from './is-date';
 export * from './is-empty';
+export * from './is-function';
 export * from './is-null';
 export * from './is-null-or-undefined';
+export * from './is-number';
 export * from './is-object';
+export * from './is-string';
 export * from './is-undefined';
 

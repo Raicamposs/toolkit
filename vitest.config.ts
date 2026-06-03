@@ -23,6 +23,8 @@ export default defineConfig({
         '**/*.test.ts',
         '**/*.spec.ts',
         '**/*.d.ts',
+        '.agent/**',
+        '.claude/**',
       ],
     },
   },

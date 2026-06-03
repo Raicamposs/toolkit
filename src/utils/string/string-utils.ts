@@ -114,25 +114,19 @@ export abstract class StringUtils {
    * StringUtils.slugify('Hello World!'); // 'hello-world'
    * StringUtils.slugify('Café au Lait', '_'); // 'cafe-au-lait'
    */
-  static slugify(text: string, separator: string = '-'): string {
+  static slugify(text: string, separator = '-'): string {
     if (this.isNotAString(text)) return text;
 
-    // Normalize text for handling accented characters
-    const normalized = text
+    const escapedSep = separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    return text
       .trim()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-
-    const replaced = normalized
-      .replaceAll(new RegExp(/(\s+)/g), ' ')
-      .trim()
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
-      .replace(/[^a-z0-9 ]/g, '') // Remove non-alphanumeric characters and spaces
-      .replace(/\s+/g, separator) // Replace spaces with separator (default is '-')
-      .replace(/-+/g, separator); // Remove duplicate separators
-
-    if (replaced.endsWith('_')) return replaced.substring(0, replaced.length - 1);
-    return replaced;
+      .replace(/[^a-z0-9]+/g, separator)
+      .replace(new RegExp(`^${escapedSep}|${escapedSep}$`, 'g'), '')
+      .replace(new RegExp(`${escapedSep}{2,}`, 'g'), separator);
   }
 
   static removeAccents(text: string): string {

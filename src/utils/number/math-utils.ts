@@ -34,7 +34,7 @@ export abstract class MathUtils {
   static isPrime(value: number): boolean {
     if (value === undefined || value === null) return false;
     if (value < 2) return false;
-    for (let i = 2; i < value; i++) {
+    for (let i = 2, limit = Math.sqrt(value); i <= limit; i++) {
       if (value % i === 0) return false;
     }
     return true;
@@ -47,12 +47,6 @@ export abstract class MathUtils {
   }
 
   static isPerfectCube(value: number): boolean {
-    if (value === undefined || value === null) return false;
-    const root = Math.cbrt(value);
-    return root % 1 === 0;
-  }
-
-  static isPerfectPower(value: number): boolean {
     if (value === undefined || value === null) return false;
     const root = Math.cbrt(value);
     return root % 1 === 0;

@@ -5,17 +5,17 @@
  * @param wait - The number of milliseconds to throttle executions to
  * @returns A new throttled function
  */
-export function throttle<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+export function throttle<TArgs extends unknown[], TReturn>(
+  func: (this: unknown, ...args: TArgs) => TReturn,
+  wait: number,
+): (...args: TArgs) => void {
   let inThrottle: boolean;
   let lastFn: ReturnType<typeof setTimeout>;
   let lastTime: number;
 
-  return function (this: any, ...args: Parameters<T>) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const context = this;
-
+  return function (this: unknown, ...args: TArgs) {
     if (!inThrottle) {
-      func.apply(context, args);
+      func.apply(this, args);
       lastTime = Date.now();
       inThrottle = true;
     } else {
@@ -23,7 +23,7 @@ export function throttle<T extends (...args: any[]) => any>(func: T, wait: numbe
       lastFn = setTimeout(
         () => {
           if (Date.now() - lastTime >= wait) {
-            func.apply(context, args);
+            func.apply(this, args);
             lastTime = Date.now();
           }
         },

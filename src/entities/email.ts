@@ -30,7 +30,7 @@ export class Email {
   }
 
   get isValid(): boolean {
-    return true; // Already validated in constructor
+    return Email.check(this._value);
   }
 
   static random(): Email {
@@ -39,25 +39,16 @@ export class Email {
   }
 
   static check(value: string | null | undefined): boolean {
-    if (isNullOrUndefined(value) || isEmpty(value)) {
-      return false;
-    }
-
-    if (!(value as string).match(Email.REGEX)) {
-      return false;
-    }
-    return true;
+    if (isNullOrUndefined(value) || isEmpty(value)) return false;
+    return Email.REGEX.test(value);
   }
 
-  static fromString(text: string | null | undefined): Array<Email> {
-    if (isNullOrUndefined(text) || isEmpty(text)) {
-      return [];
-    }
-
-    const parts = (text as string).split(';');
-    return parts.reduce((acc, part) => {
-      if (Email.check(part)) acc.push(new Email(part.trim()));
-      return acc;
-    }, Array<Email>());
+  static fromString(text: string | null | undefined): Email[] {
+    if (isNullOrUndefined(text) || isEmpty(text)) return [];
+    return text
+      .split(';')
+      .map((part) => part.trim())
+      .filter((part) => Email.check(part))
+      .map((part) => new Email(part));
   }
 }

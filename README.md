@@ -1,703 +1,919 @@
 # @raicampos/toolkit
 
-> 🛠️ A comprehensive TypeScript utility library with type-safe helpers for modern development
+> A comprehensive TypeScript utility library with type-safe helpers for modern development
 
 [![npm version](https://img.shields.io/npm/v/@raicampos/toolkit.svg)](https://www.npmjs.com/package/@raicampos/toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install @raicampos/toolkit
 ```
 
-## 🎯 Features
+## Features
 
-- ✅ **100% TypeScript** - Full type safety and IntelliSense support
-- 🎨 **Clean Architecture** - Organized by responsibility and purpose
-- 🧪 **Fully Tested** - Comprehensive test coverage with Vitest
-- 📦 **Tree-shakeable** - Import only what you need
-- 🚀 **Zero Dependencies** - Lightweight and fast
-- 📚 **Well Documented** - Clear examples and API documentation
+- **100% TypeScript** — Full type safety and IntelliSense support
+- **Tree-shakeable** — Import only what you need
+- **Zero Dependencies** — Lightweight and fast
+- **Fully Tested** — Comprehensive test coverage with Vitest
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [Async Utilities](#-async-utilities)
-- [Functional Utilities](#-functional-utilities)
-- [Validation Utilities](#-validation-utilities)
-- [Object Utilities](#-object-utilities)
-- [String Utilities](#-string-utilities)
-- [Number Utilities](#-number-utilities)
-- [JSON Utilities](#-json-utilities)
-- [Conditional Utilities](#-conditional-utilities)
-- [Type Utilities](#-type-utilities)
-- [Builders](#-builders)
-- [Entities](#-entities)
+- [Array Utilities](#array-utilities)
+- [Async Utilities](#async-utilities)
+- [Conditional Utilities](#conditional-utilities)
+- [Control Flow](#control-flow)
+- [Functional Utilities](#functional-utilities)
+- [JSON Utilities](#json-utilities)
+- [Number Utilities](#number-utilities)
+- [Object Utilities](#object-utilities)
+- [String Utilities](#string-utilities)
+- [Validation Utilities](#validation-utilities)
+- [Type Utilities](#type-utilities)
+- [Entities](#entities)
+- [Builders](#builders)
 
 ---
 
-## ⏱️ Async Utilities
-
-Utilities for asynchronous operations and timing control.
-
-### `sleep(ms: number): Promise<void>`
-
-Pauses execution for a specified duration.
+## Array Utilities
 
 ```typescript
-import { sleep } from '@raicampos/toolkit';
-
-await sleep(1000); // Wait 1 second
-console.log('1 second later');
+import { chunk, compact, difference, first, flatten, flattenDeep, groupBy, intersection, last, unique } from '@raicampos/toolkit';
 ```
 
-### `retryWithBackoff<T>(options): Promise<T>`
+### `chunk(array, size)`
 
-Retries a function with exponential backoff on failure.
+Splits an array into chunks of the given size.
 
 ```typescript
-import { retryWithBackoff } from '@raicampos/toolkit';
+chunk([1, 2, 3, 4, 5], 2) // [[1, 2], [3, 4], [5]]
+```
 
+### `compact(array)`
+
+Removes all falsy values (`false`, `null`, `0`, `''`, `undefined`, `NaN`).
+
+```typescript
+compact([0, 1, false, 2, '', 3, null, undefined]) // [1, 2, 3]
+```
+
+### `difference(a, b)`
+
+Returns elements in `a` that are not in `b`.
+
+```typescript
+difference([1, 2, 3], [2, 3, 4]) // [1]
+```
+
+### `first(array)` / `last(array)`
+
+Safe access to the first or last element.
+
+```typescript
+first([1, 2, 3]) // 1
+last([1, 2, 3])  // 3
+first([])        // undefined
+```
+
+### `flatten(array)` / `flattenDeep(array)`
+
+```typescript
+flatten([[1, 2], [3, 4]])     // [1, 2, 3, 4]
+flattenDeep([1, [2, [3, [4]]]])  // [1, 2, 3, 4]
+```
+
+### `groupBy(array, keyFn)`
+
+Groups elements by the key returned by `keyFn`.
+
+```typescript
+groupBy(
+  [{ type: 'a', v: 1 }, { type: 'b', v: 2 }, { type: 'a', v: 3 }],
+  (x) => x.type,
+)
+// { a: [{ type: 'a', v: 1 }, { type: 'a', v: 3 }], b: [{ type: 'b', v: 2 }] }
+```
+
+### `intersection(a, b)`
+
+Returns elements present in both arrays.
+
+```typescript
+intersection([1, 2, 3], [2, 3, 4]) // [2, 3]
+```
+
+### `unique(array)`
+
+Removes duplicate values.
+
+```typescript
+unique([1, 2, 2, 3, 3, 3]) // [1, 2, 3]
+```
+
+---
+
+## Async Utilities
+
+```typescript
+import { debounce, retryWithBackoff, sleep, throttle, timeout } from '@raicampos/toolkit';
+```
+
+### `sleep(ms)`
+
+Pauses execution for the given duration.
+
+```typescript
+await sleep(1000); // waits 1 second
+```
+
+### `debounce(fn, wait)`
+
+Delays invoking `fn` until `wait` ms after the last call.
+
+```typescript
+const search = debounce((query: string) => fetchResults(query), 300);
+```
+
+### `throttle(fn, wait)`
+
+Limits `fn` to at most one invocation per `wait` ms.
+
+```typescript
+const onScroll = throttle(() => updateHeader(), 100);
+```
+
+### `timeout(ms)`
+
+Returns a promise that rejects after `ms` milliseconds.
+
+```typescript
+await Promise.race([fetchData(), timeout(5000)]); // fails if takes > 5s
+```
+
+### `retryWithBackoff(options)`
+
+Retries a function with exponential backoff.
+
+```typescript
 const result = await retryWithBackoff({
-  fn: async () => fetchData(),
+  fn: () => fetchData(),
   maxRetries: 3,
-  delay: 1000, // Initial delay in ms
+  delay: 1000,
 });
 ```
 
-**Parameters:**
+---
 
-- `fn: () => Promise<T>` - Async function to retry
-- `maxRetries: number` - Maximum number of retry attempts
-- `delay: number` - Initial delay between retries (doubles each retry)
+## Conditional Utilities
+
+```typescript
+import { coalesce, nullIf, undefinedIf } from '@raicampos/toolkit';
+```
+
+### `coalesce(...values)`
+
+Returns the first non-null, non-undefined value.
+
+```typescript
+coalesce(null, undefined, 'hello', 'world') // 'hello'
+coalesce(0, null, 5)                        // 0  — zero is a valid value
+```
+
+### `nullIf(value, nullValue)`
+
+Returns `null` if `value === nullValue`, otherwise returns `value`.
+
+```typescript
+nullIf('', '')         // null
+nullIf('hello', '')    // 'hello'
+```
+
+### `undefinedIf(value, checkValue)`
+
+Returns `undefined` if `value === checkValue`, otherwise returns `value`.
+
+```typescript
+undefinedIf(0, 0)      // undefined
+undefinedIf(1, 0)      // 1
+```
 
 ---
 
-## 🔧 Functional Utilities
+## Control Flow
 
-Functional programming patterns and helpers.
+```typescript
+import { assertNever, exhaustiveCheck } from '@raicampos/toolkit';
+```
+
+### `assertNever(value, message?)`
+
+Throws at runtime and enforces exhaustiveness at compile time. Use in the `default` branch of a `switch` over a discriminated union.
+
+```typescript
+type Direction = 'left' | 'right';
+
+function move(d: Direction): string {
+  switch (d) {
+    case 'left':  return 'moving left';
+    case 'right': return 'moving right';
+    default:      return assertNever(d); // compile error if Direction grows
+  }
+}
+```
+
+### `exhaustiveCheck(value)`
+
+Compile-time exhaustiveness guard without a runtime throw.
+
+```typescript
+type Status = 'active' | 'inactive';
+
+function handle(s: Status) {
+  if (s === 'active') { /* ... */ }
+  else if (s === 'inactive') { /* ... */ }
+  else exhaustiveCheck(s); // type error if Status gains a new member
+}
+```
+
+---
+
+## Functional Utilities
+
+```typescript
+import { and, Either, isFlagged, Left, mapAllOr, mapOr, not, or, recent, Right, SpecOf } from '@raicampos/toolkit';
+```
 
 ### `Either<L, R>`
 
-Type-safe error handling without exceptions.
+Represents a value that is either a failure (`Left`) or a success (`Right`).
 
 ```typescript
-import { Either, Left, Right } from '@raicampos/toolkit';
-
 function divide(a: number, b: number): Either<string, number> {
-  if (b === 0) {
-    return new Left('Division by zero');
-  }
+  if (b === 0) return new Left('Division by zero');
   return new Right(a / b);
 }
 
 const result = divide(10, 2);
 if (result.isRight()) {
   console.log(result.value); // 5
-} else {
-  console.error(result.value); // Error message
 }
 ```
 
-### `mapOr<I, O>(value, mapper, defaultValue): O | null`
+### `mapOr(value, mapper, defaultValue?)`
 
 Maps a value through a function, returning a default if null/undefined.
 
 ```typescript
-import { mapOr } from '@raicampos/toolkit';
-
-const user = { name: 'John' };
-const upperName = mapOr(user.name, (n) => n.toUpperCase(), 'UNKNOWN');
-// Result: 'JOHN'
-
-const noName = mapOr(null, (n) => n.toUpperCase(), 'UNKNOWN');
-// Result: 'UNKNOWN'
+mapOr('john', (n) => n.toUpperCase(), 'UNKNOWN') // 'JOHN'
+mapOr(null,   (n) => n.toUpperCase(), 'UNKNOWN') // 'UNKNOWN'
 ```
 
-### `mapAllOr<I, O>(array, mapper, defaultValue): O[]`
+### `mapAllOr(array, mapper, defaultValue?)`
 
-Maps all items in an array, returning default if array is null/undefined.
+Maps all items in an array, returning a default if the array is null/undefined.
 
 ```typescript
-import { mapAllOr } from '@raicampos/toolkit';
-
-const numbers = [1, 2, 3];
-const doubled = mapAllOr(numbers, (n) => n * 2, []);
-// Result: [2, 4, 6]
+mapAllOr([1, 2, 3], (n) => n * 2) // [2, 4, 6]
+mapAllOr(null, (n) => n * 2, [])  // []
 ```
 
-### `SpecOf<T>`
+### `SpecOf<T>` — Specification pattern
 
-Predicate function type for composable specifications.
-
-```typescript
-import { SpecOf } from '@raicampos/toolkit';
-
-interface User {
-  age: number;
-  isPremium: boolean;
-}
-
-const isAdult: SpecOf<User> = (user) => user.age >= 18;
-const isPremium: SpecOf<User> = (user) => user.isPremium;
-```
-
-### `and<T>(...specs): SpecOf<T>`
-
-Combines multiple specs with AND logic - returns true only if all specs are satisfied.
+Composable predicate functions.
 
 ```typescript
-import { and, SpecOf } from '@raicampos/toolkit';
+interface User { age: number; isPremium: boolean }
 
-const isAdult: SpecOf<User> = (user) => user.age >= 18;
-const isPremium: SpecOf<User> = (user) => user.isPremium;
-
-const isAdultPremium = and(isAdult, isPremium);
-
-isAdultPremium({ age: 25, isPremium: true }); // true
-isAdultPremium({ age: 25, isPremium: false }); // false
-isAdultPremium({ age: 16, isPremium: true }); // false
-```
-
-### `or<T>(...specs): SpecOf<T>`
-
-Combines multiple specs with OR logic - returns true if at least one spec is satisfied.
-
-```typescript
-import { or, SpecOf } from '@raicampos/toolkit';
-
-const isAdult: SpecOf<User> = (user) => user.age >= 18;
-const isPremium: SpecOf<User> = (user) => user.isPremium;
+const isAdult:   SpecOf<User> = (u) => u.age >= 18;
+const isPremium: SpecOf<User> = (u) => u.isPremium;
 
 const canAccess = or(isAdult, isPremium);
-
-canAccess({ age: 16, isPremium: true }); // true
-canAccess({ age: 25, isPremium: false }); // true
-canAccess({ age: 16, isPremium: false }); // false
-```
-
-### `not<T>(spec): SpecOf<T>`
-
-Negates a specification.
-
-```typescript
-import { not, SpecOf } from '@raicampos/toolkit';
-
-const isAdult: SpecOf<User> = (user) => user.age >= 18;
+const fullAccess = and(isAdult, isPremium);
 const isMinor = not(isAdult);
 
-isMinor({ age: 16 }); // true
-isMinor({ age: 25 }); // false
+users.filter(canAccess);
 ```
 
-**Complex Composition Example:**
+### `isFlagged<T>(key)`
+
+Creates a predicate that checks if a boolean property is `true`.
 
 ```typescript
-import { and, or, not, SpecOf } from '@raicampos/toolkit';
-
-interface User {
-  age: number;
-  isPremium: boolean;
-  isActive: boolean;
-}
-
-const isAdult: SpecOf<User> = (user) => user.age >= 18;
-const isPremium: SpecOf<User> = (user) => user.isPremium;
-const isActive: SpecOf<User> = (user) => user.isActive;
-
-// Complex rule: (isAdult AND isPremium) OR (NOT isActive)
-const complexRule = or(and(isAdult, isPremium), not(isActive));
-
-const users = [
-  { age: 25, isPremium: true, isActive: true }, // true (adult + premium)
-  { age: 16, isPremium: false, isActive: false }, // true (not active)
-  { age: 25, isPremium: false, isActive: true }, // false
-];
-
-const filtered = users.filter(complexRule);
+const isActive = isFlagged<User>('isActive');
+users.filter(isActive);
 ```
 
-### `isFlagged<T>(key): SpecOf<T>`
+### `recent<T, K>(config)`
 
-Creates a predicate that checks if a boolean property is true.
-
-```typescript
-import { isFlagged } from '@raicampos/toolkit';
-
-interface User {
-  isActive: boolean;
-  isPremium: boolean;
-}
-
-const isActiveUser = isFlagged<User>('isActive');
-const isPremiumUser = isFlagged<User>('isPremium');
-
-const users = [
-  { isActive: true, isPremium: false },
-  { isActive: false, isPremium: true },
-  { isActive: true, isPremium: true },
-];
-
-const activeUsers = users.filter(isActiveUser);
-// Result: [{ isActive: true, isPremium: false }, { isActive: true, isPremium: true }]
-```
-
-### `recent<T, K>(config): SpecOf<T>`
-
-Creates a specification that checks if a date property is within a specified time window.
+Creates a predicate that checks if a date property is within a time window.
 
 ```typescript
-import { recent } from '@raicampos/toolkit';
-
-interface User {
-  id: number;
-  name: string;
-  createdAt: Date;
-  lastLoginAt: Date;
-}
-
-// Check if user was created within last 5 minutes
-const isRecentlyCreated = recent<User, 'createdAt'>({
-  key: 'createdAt',
-  minutes: 5,
-});
-
-// Check if user logged in within last 30 minutes
-const isRecentlyActive = recent<User, 'lastLoginAt'>({
-  key: 'lastLoginAt',
-  minutes: 30,
-});
-
-const user = {
-  id: 1,
-  name: 'John',
-  createdAt: new Date(),
-  lastLoginAt: new Date(),
-};
-
-isRecentlyCreated(user); // true
-isRecentlyActive(user); // true
-
-// Use with filter
-const users = [
-  /* ... */
-];
-const recentUsers = users.filter(isRecentlyCreated);
-```
-
-**Constants:**
-
-- `MS_PER_MINUTE` - Milliseconds per minute (60,000)
-
----
-
-## ✅ Validation Utilities
-
-Type checking and validation helpers.
-
-### `isAssigned<T>(value: T): boolean`
-
-Checks if a value is not null or undefined.
-
-```typescript
-import { isAssigned } from '@raicampos/toolkit';
-
-isAssigned(0); // true
-isAssigned(''); // true
-isAssigned(false); // true
-isAssigned(null); // false
-isAssigned(undefined); // false
-```
-
-### `isNull(value: unknown): boolean`
-
-Checks if a value is strictly null.
-
-```typescript
-import { isNull } from '@raicampos/toolkit';
-
-isNull(null); // true
-isNull(undefined); // false
-isNull(0); // false
-```
-
-### `isUndefined(value: unknown): boolean`
-
-Checks if a value is strictly undefined.
-
-```typescript
-import { isUndefined } from '@raicampos/toolkit';
-
-isUndefined(undefined); // true
-isUndefined(null); // false
-```
-
-### `isNullOrUndefined(value: unknown): boolean`
-
-Checks if a value is null or undefined.
-
-```typescript
-import { isNullOrUndefined } from '@raicampos/toolkit';
-
-isNullOrUndefined(null); // true
-isNullOrUndefined(undefined); // true
-isNullOrUndefined(0); // false
-```
-
-### `isEmpty(value: unknown): boolean`
-
-Checks if a value is empty (null, undefined, empty string, or empty array).
-
-```typescript
-import { isEmpty } from '@raicampos/toolkit';
-
-isEmpty(''); // true
-isEmpty([]); // true
-isEmpty(null); // true
-isEmpty('hello'); // false
-isEmpty([1, 2, 3]); // false
+const isRecentlyCreated = recent<User, 'createdAt'>({ key: 'createdAt', minutes: 5 });
+users.filter(isRecentlyCreated);
 ```
 
 ---
 
-## 📦 Object Utilities
-
-Object manipulation and transformation helpers.
-
-### `clone<T>(obj: T): T`
-
-Deep clones an object.
-
-```typescript
-import { clone } from '@raicampos/toolkit';
-
-const original = { name: 'John', address: { city: 'NYC' } };
-const copy = clone(original);
-
-copy.address.city = 'LA';
-console.log(original.address.city); // 'NYC' (unchanged)
-```
-
-### `pickKeys<T, K>(obj: T, ...keys: K[]): Partial<T>`
-
-Creates a new object with only specified keys.
-
-```typescript
-import { pickKeys } from '@raicampos/toolkit';
-
-const user = { id: 1, name: 'John', email: 'john@example.com', age: 30 };
-const publicData = pickKeys(user, 'id', 'name');
-// Result: { id: 1, name: 'John' }
-```
-
-### `withoutKey<T, K>(obj: T, ...keys: K[]): Omit<T, K>`
-
-Creates a new object excluding specified keys.
-
-```typescript
-import { withoutKey } from '@raicampos/toolkit';
-
-const user = { id: 1, name: 'John', password: 'secret' };
-const safeUser = withoutKey(user, 'password');
-// Result: { id: 1, name: 'John' }
-```
-
-### `purgeNullishValues(obj: any): any`
-
-Recursively removes null and undefined values from objects and arrays.
-
-```typescript
-import { purgeNullishValues } from '@raicampos/toolkit';
-
-const data = {
-  name: 'John',
-  age: null,
-  address: {
-    city: 'NYC',
-    zip: undefined,
-  },
-};
-
-const cleaned = purgeNullishValues(data);
-// Result: { name: 'John', address: { city: 'NYC' } }
-```
-
-### `hasOnlyUnassignedProperties(obj: unknown): boolean`
-
-Checks if an object has only unassigned (null or undefined) properties.
-
-```typescript
-import { hasOnlyUnassignedProperties } from '@raicampos/toolkit';
-
-hasOnlyUnassignedProperties({ name: 'John', age: 30 }); // false
-hasOnlyUnassignedProperties({ name: 'John', age: null }); // false
-hasOnlyUnassignedProperties({ name: null, age: null }); // true
-hasOnlyUnassignedProperties({}); // true
-```
-
-### `hasSomePropertyAssigned(obj: unknown): boolean`
-
-Checks if an object has some assigned properties.
-
-```typescript
-import { hasSomePropertyAssigned } from '@raicampos/toolkit';
-
-hasSomePropertyAssigned({ name: 'John', age: null }); // true
-hasSomePropertyAssigned({ name: null, age: null }); // false
-```
-
----
-
-## 🔤 String Utilities
-
-String transformation and manipulation utilities.
-
-### `StringUtils.toSnakeCase(str: string): string`
-
-Converts a string to snake_case.
-
-```typescript
-import { StringUtils } from '@raicampos/toolkit';
-
-StringUtils.toSnakeCase('helloWorld'); // 'hello_world'
-StringUtils.toSnakeCase('HelloWorld'); // 'hello_world'
-StringUtils.toSnakeCase('hello-world'); // 'hello_world'
-```
-
-### `StringUtils.toKebabCase(str: string): string`
-
-Converts a string to kebab-case.
-
-```typescript
-import { StringUtils } from '@raicampos/toolkit';
-
-StringUtils.toKebabCase('helloWorld'); // 'hello-world'
-StringUtils.toKebabCase('HelloWorld'); // 'hello-world'
-```
-
-### `StringUtils.toCamelCase(str: string): string`
-
-Converts a string to camelCase.
-
-```typescript
-import { StringUtils } from '@raicampos/toolkit';
-
-StringUtils.toCamelCase('hello_world'); // 'helloWorld'
-StringUtils.toCamelCase('hello-world'); // 'helloWorld'
-```
-
-### `StringUtils.toTitleCase(str: string): string`
-
-Converts a string to Title Case.
-
-```typescript
-import { StringUtils } from '@raicampos/toolkit';
-
-StringUtils.toTitleCase('hello world'); // 'Hello World'
-StringUtils.toTitleCase('HELLO WORLD'); // 'Hello World'
-```
-
-### `StringUtils.slugify(text: string, separator?: string): string`
-
-Creates a URL-friendly slug from text.
-
-```typescript
-import { StringUtils } from '@raicampos/toolkit';
-
-StringUtils.slugify('Hello World!'); // 'hello-world'
-StringUtils.slugify('Café au Lait'); // 'cafe-au-lait'
-StringUtils.slugify('Hello World', '_'); // 'hello_world'
-```
-
-### `StringUtils.removeAccents(text: string): string`
-
-Removes accents from characters.
-
-```typescript
-import { StringUtils } from '@raicampos/toolkit';
-
-StringUtils.removeAccents('Olá, José!'); // 'Ola, Jose!'
-StringUtils.removeAccents('Café'); // 'Cafe'
-```
-
----
-
-## 🔢 Number Utilities
-
-Number formatting and rounding utilities.
-
-### `roundABNT(value: number | string, fractionDigits?: number): number`
-
-Rounds numbers following ABNT (Brazilian) standards.
-
-```typescript
-import { roundABNT } from '@raicampos/toolkit';
-
-roundABNT(1.335, 2); // 1.34 (rounds up when last digit is 5 followed by non-zero)
-roundABNT(1.345, 2); // 1.34 (rounds to nearest even when 5 followed by zeros)
-roundABNT(1.666, 2); // 1.67
-```
-
-**ABNT Rounding Rules:**
-
-- If digit after last kept digit is < 5: keep unchanged
-- If digit is > 5 or = 5 followed by non-zero: round up
-- If digit is = 5 followed by zeros: round to nearest even
-
----
-
-## 📄 JSON Utilities
-
-Safe JSON parsing and stringification.
-
-### `JSONConverter.stringify(obj: any): string | null`
-
-Safely converts an object to JSON string.
+## JSON Utilities
 
 ```typescript
 import { JSONConverter } from '@raicampos/toolkit';
-
-JSONConverter.stringify({ name: 'John' }); // '{"name":"John"}'
-JSONConverter.stringify(null); // null
-JSONConverter.stringify(undefined); // null
 ```
 
-### `JSONConverter.parse(json: string | null): object | undefined`
+### `JSONConverter.stringify<T>(object)`
 
-Safely parses JSON string.
+Safely converts any value to a JSON string. Returns `null` for `null`/`undefined`.
 
 ```typescript
-import { JSONConverter } from '@raicampos/toolkit';
-
-JSONConverter.parse('{"name":"John"}'); // { name: 'John' }
-JSONConverter.parse('invalid json'); // undefined
-JSONConverter.parse(null); // undefined
-JSONConverter.parse(''); // undefined
+JSONConverter.stringify({ name: 'Ana' }) // '{"name":"Ana"}'
+JSONConverter.stringify(null)            // null
 ```
 
-### `JSONConverter.parseWithDefault(json: string | null, defaultValue?: any): any`
+### `JSONConverter.parse<T>(json)`
 
-Parses JSON with a fallback default value.
+Safely parses a JSON string. Returns `undefined` on failure.
 
 ```typescript
-import { JSONConverter } from '@raicampos/toolkit';
-
-JSONConverter.parseWithDefault('{"name":"John"}', {}); // { name: 'John' }
-JSONConverter.parseWithDefault('invalid', { name: 'Default' }); // { name: 'Default' }
-JSONConverter.parseWithDefault(null, []); // []
+JSONConverter.parse<{ name: string }>('{"name":"Ana"}') // { name: 'Ana' }
+JSONConverter.parse('invalid json')                      // undefined
 ```
 
----
+### `JSONConverter.parseWithDefault<T>(json, defaultValue?)`
 
-## 🔀 Conditional Utilities
-
-Conditional value helpers and null coalescing.
-
-### `coalesce<T>(...values: T[]): T | undefined`
-
-Returns the first non-null, non-undefined value.
+Parses JSON with a typed fallback value (default: `{}`).
 
 ```typescript
-import { coalesce } from '@raicampos/toolkit';
-
-coalesce(null, undefined, 'hello', 'world'); // 'hello'
-coalesce(null, undefined); // undefined
-coalesce(0, null, 5); // 0 (0 is valid)
-```
-
-### `nullIf<T>(value: T, condition: boolean): T | null`
-
-Returns null if condition is true, otherwise returns the value.
-
-```typescript
-import { nullIf } from '@raicampos/toolkit';
-
-nullIf('hello', true); // null
-nullIf('hello', false); // 'hello'
-nullIf(42, 42 === 0); // 42
-```
-
-### `undefinedIf<T>(value: T, condition: boolean): T | undefined`
-
-Returns undefined if condition is true, otherwise returns the value.
-
-```typescript
-import { undefinedIf } from '@raicampos/toolkit';
-
-undefinedIf('hello', true); // undefined
-undefinedIf('hello', false); // 'hello'
+JSONConverter.parseWithDefault('{"x":1}', { x: 0 }) // { x: 1 }
+JSONConverter.parseWithDefault('bad',     { x: 0 }) // { x: 0 }
 ```
 
 ---
 
-## 🎨 Type Utilities
-
-TypeScript type helpers for better type safety.
-
-### `Nullable<T>`
-
-Represents a value that can be null or undefined.
+## Number Utilities
 
 ```typescript
-import { Nullable } from '@raicampos/toolkit';
-
-const name: Nullable<string> = null; // OK
-const age: Nullable<number> = undefined; // OK
-const active: Nullable<boolean> = true; // OK
+import { MathUtils, numberParse, numberParseDef, roundABNT } from '@raicampos/toolkit';
 ```
 
-### `Optional<T, K>`
-
-Makes specific properties of a type optional.
+### `MathUtils`
 
 ```typescript
-import { Optional } from '@raicampos/toolkit';
+MathUtils.calculatePercentage(200, 15)  // 30  (15% of 200)
+MathUtils.calculatePercentageOf(30, 200) // 15  (30 is X% of 200)
+MathUtils.isPrime(17)         // true
+MathUtils.isPerfectSquare(25) // true
+MathUtils.isPerfectCube(27)   // true
+MathUtils.isEven(4)           // true
+MathUtils.isOdd(3)            // true
+MathUtils.isFractional(3.5)   // true
+MathUtils.sum(1, 2, 3)        // 6
+MathUtils.average(1, 2, 3)    // 2
+MathUtils.min(1, 2, 3)        // 1
+MathUtils.max(1, 2, 3)        // 3
+MathUtils.range(1, 5)         // [1, 2, 3, 4, 5]
+MathUtils.random(1, 10)       // random number between 1 and 10
+```
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
+### `numberParse(value)`
+
+Parses a number from a string, number, or any object with a `toNumber()` method. Returns `undefined` for `NaN`.
+
+```typescript
+numberParse('42')    // 42
+numberParse('abc')   // undefined
+numberParse(null)    // null
+```
+
+### `numberParseDef(value, defaultValue?)`
+
+Same as `numberParse` but returns `defaultValue` (default: `0`) instead of `undefined`.
+
+```typescript
+numberParseDef('abc', -1) // -1
+numberParseDef(null)      // 0
+```
+
+### `roundABNT(value, fractionDigits?)`
+
+Rounds following ABNT NBR 5891 rules (round-half-to-even).
+
+```typescript
+roundABNT(1.345, 2) // 1.34  — rounds to nearest even
+roundABNT(1.335, 2) // 1.34
+roundABNT(1.666, 2) // 1.67
+```
+
+---
+
+## Object Utilities
+
+```typescript
+import { clone, createFactory, deepMerge, hasOnlyUnassignedProperties, hasSomePropertyAssigned, mapValues, omitKeys, pickKeys, purgeNullishValues, withoutKey } from '@raicampos/toolkit';
+```
+
+### `clone(obj)`
+
+Deep clones any value using the native `structuredClone` API.
+
+```typescript
+const copy = clone({ nested: { value: 1 } });
+copy.nested.value = 2; // original unchanged
+```
+
+### `createFactory(defaults)`
+
+Creates a factory function with sensible defaults. Ideal for test data factories.
+
+```typescript
+const makeUser = createFactory({ id: '1', name: 'Ana', role: 'user' as const });
+
+makeUser()                   // { id: '1', name: 'Ana', role: 'user' }
+makeUser({ name: 'Carlos' }) // { id: '1', name: 'Carlos', role: 'user' }
+makeUser({ role: 'admin' })  // { id: '1', name: 'Ana', role: 'admin' }
+```
+
+### `deepMerge(target, source)`
+
+Deeply merges two objects. Source values override target values.
+
+```typescript
+deepMerge({ a: 1, b: { x: 1, y: 2 } }, { b: { y: 99, z: 3 } })
+// { a: 1, b: { x: 1, y: 99, z: 3 } }
+```
+
+### `mapValues(obj, fn)`
+
+Transforms each value of an object, preserving the keys.
+
+```typescript
+mapValues({ a: 1, b: 2, c: 3 }, (v) => v * 2) // { a: 2, b: 4, c: 6 }
+mapValues({ a: 1, b: 2 }, String)              // { a: '1', b: '2' }
+```
+
+### `omitKeys(obj, keys)`
+
+Returns a new object without the specified keys.
+
+```typescript
+omitKeys({ id: 1, name: 'Ana', password: 'x' }, ['password'])
+// { id: 1, name: 'Ana' }
+```
+
+### `pickKeys(obj, ...keys)`
+
+Returns a new object with only the specified keys.
+
+```typescript
+pickKeys({ id: 1, name: 'Ana', password: 'x' }, 'id', 'name')
+// { id: 1, name: 'Ana' }
+```
+
+### `purgeNullishValues(obj)`
+
+Recursively removes `null` and `undefined` from objects and arrays.
+
+```typescript
+purgeNullishValues({ name: 'Ana', age: null, address: { city: 'SP', zip: undefined } })
+// { name: 'Ana', address: { city: 'SP' } }
+```
+
+### `withoutKey(obj, ...keys)`
+
+Alias for `omitKeys` with a variadic key signature.
+
+### `hasSomePropertyAssigned(obj)` / `hasOnlyUnassignedProperties(obj)`
+
+```typescript
+hasSomePropertyAssigned({ name: 'Ana', age: null })     // true
+hasOnlyUnassignedProperties({ name: null, age: null })  // true
+```
+
+---
+
+## String Utilities
+
+```typescript
+import { StringUtils } from '@raicampos/toolkit';
+```
+
+| Method | Input | Output |
+|--------|-------|--------|
+| `toSnakeCase(str)` | `'helloWorld'` | `'hello_world'` |
+| `toKebabCase(str)` | `'helloWorld'` | `'hello-world'` |
+| `toCamelCase(str)` | `'hello_world'` | `'helloWorld'` |
+| `toTitleCase(str)` | `'hello world'` | `'Hello World'` |
+| `capitalize(str)` | `'hello'` | `'Hello'` |
+| `removeAccents(str)` | `'Café'` | `'Cafe'` |
+| `slugify(text, sep?)` | `'Olá Mundo!'` | `'ola-mundo'` |
+
+```typescript
+StringUtils.slugify('Hello World!', '_') // 'hello_world'
+StringUtils.slugify('Café au Lait')      // 'cafe-au-lait'
+```
+
+---
+
+## Validation Utilities
+
+```typescript
+import { isArray, isArrayOf, isAssigned, isBoolean, isDate, isEmpty, isFunction, isNull, isNullOrUndefined, isNumber, isObject, isString, isUndefined } from '@raicampos/toolkit';
+```
+
+All functions are proper TypeScript type guards (narrow the type on `true`).
+
+| Function | Returns `true` when |
+|----------|---------------------|
+| `isString(v)` | `typeof v === 'string'` |
+| `isNumber(v)` | `typeof v === 'number' && !isNaN(v)` |
+| `isBoolean(v)` | `typeof v === 'boolean'` |
+| `isArray(v)` | `Array.isArray(v)` |
+| `isArrayOf(v, guard)` | array where every item passes `guard` |
+| `isFunction(v)` | `typeof v === 'function'` |
+| `isDate(v)` | `v instanceof Date` and not invalid |
+| `isObject(v)` | plain object (not array, not null) |
+| `isNull(v)` | `v === null` |
+| `isUndefined(v)` | `v === undefined` |
+| `isNullOrUndefined(v)` | `v === null \|\| v === undefined` |
+| `isAssigned(v)` | `v !== null && v !== undefined` |
+| `isEmpty(v)` | null, undefined, empty string, or empty array |
+
+```typescript
+if (isString(value)) {
+  value.toUpperCase(); // type-safe — value is string here
 }
 
-type UserWithOptionalEmail = Optional<User, 'email'>;
-// { id: number; name: string; email?: string; }
-```
-
-### `RequireAtLeastOne<T>`
-
-Requires at least one property from a type to be defined.
-
-```typescript
-import { RequireAtLeastOne } from '@raicampos/toolkit';
-
-interface Contact {
-  email: string;
-  phone: string;
+if (isArrayOf(items, isNumber)) {
+  items.reduce((a, b) => a + b, 0); // items is number[] here
 }
-
-type ContactMethod = RequireAtLeastOne<Contact>;
-// Must have at least email OR phone (or both)
-
-const valid: ContactMethod = { email: 'test@example.com' }; // OK
-const invalid: ContactMethod = {}; // Error
 ```
-
-### Other Type Utilities
-
-- `ValueOf<T>` - Extracts value types from an object
-- `Replace<T, R>` - Replaces properties in a type with new ones
-- `OmitNullableProperties<T>` - Removes nullable properties from a type
-- `Prettify<T>` - Simplifies complex types for better readability
-- `ObjectKeys<T>` - Type-safe Object.keys() with proper typing
-- `ObjectEntries<T>` - Type-safe Object.entries() with proper typing
-- `literal<T>(value)` - Creates literal types from string values
 
 ---
 
-## 🏗️ Builders
+## Type Utilities
 
-Builder patterns for constructing complex objects.
+### Core types
+
+```typescript
+import { Brand, Merge, Nullable, Optional, PartialBy, RequiredBy, ReadonlyBy } from '@raicampos/toolkit';
+```
+
+#### `Nullable<T>`
+```typescript
+const name: Nullable<string> = null; // string | null | undefined
+```
+
+#### `Brand<K, T>`
+Nominal typing to prevent mixing semantically different primitives.
+```typescript
+type UserId  = Brand<string, 'UserId'>
+type OrderId = Brand<string, 'OrderId'>
+
+declare function getUser(id: UserId): User
+const orderId = '123' as OrderId
+getUser(orderId) // compile error — OrderId is not UserId
+```
+
+#### `Optional<T, K>` / `PartialBy<T, K>`
+Make specific keys optional.
+```typescript
+type Draft = PartialBy<{ id: number; name: string }, 'id'>
+// { id?: number; name: string }
+```
+
+#### `RequiredBy<T, K>` / `ReadonlyBy<T, K>`
+```typescript
+type WithEmail = RequiredBy<{ name: string; email?: string }, 'email'>
+// { name: string; email: string }
+```
+
+#### `Merge<T, U>`
+Combines two types, with `U` overriding `T` on conflicts.
+```typescript
+type A = { id: number; createdAt: Date }
+type B = { createdAt: string }
+type Merged = Merge<A, B> // { id: number; createdAt: string }
+```
+
+---
+
+### Deep types
+
+```typescript
+import { DeepMutable, DeepPartial, DeepReadonly, DeepRequired, Writable } from '@raicampos/toolkit';
+```
+
+| Type | Effect |
+|------|--------|
+| `DeepPartial<T>` | All properties optional, recursively |
+| `DeepReadonly<T>` | All properties readonly, recursively |
+| `DeepRequired<T>` | All properties required, recursively |
+| `DeepMutable<T>` | Removes `readonly` recursively |
+| `Writable<T>` | Removes `readonly` (shallow) |
+
+---
+
+### Object shape types
+
+```typescript
+import { Getters, KeysOfType, OmitByType, OmitNullableProperties, OptionalKeys, PickByType, RequiredKeys } from '@raicampos/toolkit';
+```
+
+```typescript
+interface User { id: number; name: string; active: boolean; email?: string }
+
+type NumKeys     = KeysOfType<User, number>   // 'id'
+type OnlyNums    = PickByType<User, number>   // { id: number }
+type NoNums      = OmitByType<User, number>   // { name: string; active: boolean; email?: string }
+type Required    = RequiredKeys<User>         // 'id' | 'name' | 'active'
+type Optional    = OptionalKeys<User>         // 'email'
+
+type PersonAPI   = Getters<{ name: string; age: number }>
+// { getName: () => string; getAge: () => number }
+```
+
+---
+
+### Array types
+
+```typescript
+import { AtLeast, ElementOf, NonEmptyArray, Tuple } from '@raicampos/toolkit';
+```
+
+```typescript
+type UserEl   = ElementOf<User[]>         // User
+type Pair     = Tuple<string, 2>          // [string, string]
+type OneOrMore = NonEmptyArray<number>    // [number, ...number[]]
+type Min2     = AtLeast<number, 2>        // [number, number, ...number[]]
+```
+
+---
+
+### Function types
+
+```typescript
+import { Arguments, AsyncFunction, FirstArgument, Promisify } from '@raicampos/toolkit';
+```
+
+```typescript
+type Fn   = (id: string, n: number) => boolean
+type Args = Arguments<Fn>        // [string, number]
+type F1   = FirstArgument<Fn>    // string
+type Async = AsyncFunction<Fn>   // (id: string, n: number) => Promise<boolean>
+type P     = Promisify<Fn>       // (id: string, n: number) => Promise<boolean>
+```
+
+---
+
+### Template literal types
+
+```typescript
+import { Join, PathOf, Split } from '@raicampos/toolkit';
+```
+
+```typescript
+type Parts  = Split<'a.b.c', '.'>          // ['a', 'b', 'c']
+type Joined = Join<['a', 'b', 'c'], '-'>   // 'a-b-c'
+
+type Config = { server: { host: string; port: number }; db: { url: string } }
+type Paths  = PathOf<Config>
+// 'server' | 'db' | 'server.host' | 'server.port' | 'db.url'
+```
+
+---
+
+### Union types
+
+```typescript
+import { UnionLast, UnionToIntersection, UnionToTuple } from '@raicampos/toolkit';
+```
+
+```typescript
+type AB = UnionToIntersection<{ a: string } | { b: number }>
+// { a: string } & { b: number }
+
+type Tuple = UnionToTuple<'a' | 'b' | 'c'>
+// ['a', 'b', 'c']
+```
+
+---
+
+### Type intrinsics
+
+```typescript
+import { AssertEqual, IsAny, IsNever, IsUnknown } from '@raicampos/toolkit';
+```
+
+```typescript
+type T1 = IsNever<never>    // true
+type T2 = IsNever<string>   // false
+type T3 = IsAny<any>        // true
+type T4 = IsUnknown<unknown> // true
+
+type T5 = AssertEqual<string, string> // true
+type T6 = AssertEqual<string, number> // false
+```
+
+---
+
+### JSON types
+
+```typescript
+import { JsonArray, JsonObject, JsonPrimitive, JsonValue, Jsonify } from '@raicampos/toolkit';
+```
+
+```typescript
+const config: JsonObject = { host: 'localhost', port: 3000, tags: ['prod'] };
+
+type Source     = { id: number; created: Date; fn: () => void }
+type Serialized = Jsonify<Source>
+// { id: number; created: string; fn: never }
+```
+
+---
+
+### State types
+
+#### `Result<T, E>`
+
+Type-safe error handling without exceptions.
+
+```typescript
+import { err, ok, Result } from '@raicampos/toolkit';
+
+function divide(a: number, b: number): Result<number, string> {
+  if (b === 0) return err('Division by zero');
+  return ok(a / b);
+}
+
+const result = divide(10, 2);
+if (result.success) {
+  console.log(result.data); // 5
+} else {
+  console.error(result.error);
+}
+```
+
+#### `Option<T>`
+
+Explicit optional value — clearer than `T | null | undefined`.
+
+```typescript
+import { none, Option, some } from '@raicampos/toolkit';
+
+function findUser(id: string): Option<User> {
+  const user = db.find(id);
+  return user ? some(user) : none;
+}
+
+const result = findUser('1');
+if (result.type === 'some') {
+  console.log(result.value);
+}
+```
+
+#### `AsyncState<T, E>`
+
+Discriminated union for async operation state (loading / success / error).
+
+```typescript
+import { asyncError, asyncLoading, asyncSuccess, AsyncState } from '@raicampos/toolkit';
+
+type UserState = AsyncState<User>;
+
+function handleState(state: UserState) {
+  switch (state.status) {
+    case 'loading': return <Spinner />;
+    case 'success': return <Profile user={state.data} />;
+    case 'error':   return <Alert error={state.error} />;
+  }
+}
+
+// Create states
+const loading = asyncLoading();
+const success = asyncSuccess(user);
+const failure = asyncError(new Error('Not found'));
+```
+
+---
+
+### Other type utilities
+
+```typescript
+import { literal, ObjectEntries, ObjectKeys, OmitNullableProperties, Prettify, Replace, RequireAtLeastOne, ValueOf } from '@raicampos/toolkit';
+```
+
+| Utility | Description |
+|---------|-------------|
+| `ValueOf<T>` | Union of all value types in `T` |
+| `Replace<T, R>` | Replaces specific property types |
+| `OmitNullableProperties<T>` | Removes properties that can be `null` |
+| `Prettify<T>` | Flattens complex intersection types for readability |
+| `RequireAtLeastOne<T>` | Requires at least one property to be present |
+| `ObjectKeys(obj)` | Type-safe `Object.keys()` |
+| `ObjectEntries(obj)` | Type-safe `Object.entries()` |
+| `literal(value)` | Infers a string literal type instead of `string` |
+
+---
+
+## Entities
+
+Domain entities with built-in validation.
+
+### `CPF`
+
+```typescript
+import { CPF } from '@raicampos/toolkit';
+
+const cpf = new CPF('123.456.789-09');
+
+cpf.isValid  // true
+cpf.value    // '123.456.789-09'  (formatted)
+cpf.stripped // '12345678909'     (digits only)
+cpf.masked   // '123.***.***-09'
+
+CPF.check('12345678909')  // true
+const random = CPF.random() // generates a valid CPF
+```
+
+### `CNPJ`
+
+```typescript
+import { CNPJ } from '@raicampos/toolkit';
+
+const cnpj = new CNPJ('11.222.333/0001-81');
+
+cnpj.isValid  // true
+cnpj.value    // '11.222.333/0001-81'
+cnpj.stripped // '11222333000181'
+cnpj.masked   // '11.***.***//0001-81'
+
+CNPJ.check('11222333000181') // true
+const random = CNPJ.random()
+```
+
+### `Email`
+
+Constructor throws for invalid values. Use `Email.check()` to validate without throwing.
+
+```typescript
+import { Email } from '@raicampos/toolkit';
+
+const email = new Email('user@example.com'); // throws if invalid
+
+email.value    // 'user@example.com'
+email.username // 'user'
+email.domain   // 'example.com'
+email.isValid  // true
+
+Email.check('user@example.com')           // true
+Email.check('invalid')                    // false
+Email.fromString('a@b.com;c@d.com')       // [Email, Email]
+const random = Email.random()
+```
+
+### `Phone`
+
+```typescript
+import { Phone } from '@raicampos/toolkit';
+
+const phone = new Phone('(11) 99876-5432');
+
+phone.isValid  // true
+phone.value    // '(11)99876-5432'
+phone.stripped // '11998765432'
+
+Phone.check('11998765432') // true
+const random = Phone.random()
+```
+
+### `DateRange`
+
+```typescript
+import { DateRange } from '@raicampos/toolkit';
+
+const range = new DateRange(new Date('2024-01-01'), new Date('2024-12-31'));
+// throws RangeError if start > end
+
+DateRange.fromString('2024-01-01', '2024-12-31') // DateRange
+```
+
+### `NumberRange`
+
+```typescript
+import { NumberRange } from '@raicampos/toolkit';
+
+const range = new NumberRange(1, 100);
+// throws Error if start > end
+
+range.start // 1
+range.end   // 100
+```
+
+---
+
+## Builders
 
 ### `CompositeBuilder<T>`
 
@@ -706,164 +922,95 @@ Fluent builder for applying transformations to objects.
 ```typescript
 import { CompositeBuilder } from '@raicampos/toolkit';
 
-interface User {
-  name: string;
-  email: string;
-  isActive: boolean;
-}
-
 const builder = CompositeBuilder.new<User>()
-  .add((user) => ({ ...user, email: user.email.toLowerCase() }))
-  .add((user) => ({ ...user, isActive: true }));
+  .add((u) => ({ ...u, email: u.email.toLowerCase() }))
+  .add((u) => ({ ...u, isActive: true }));
 
-const user = builder.build({
-  name: 'John',
-  email: 'JOHN@EXAMPLE.COM',
-  isActive: false,
-});
-// Result: { name: 'John', email: 'john@example.com', isActive: true }
+const user = builder.build({ name: 'Ana', email: 'ANA@EXAMPLE.COM', isActive: false });
+// { name: 'Ana', email: 'ana@example.com', isActive: true }
 ```
 
-### `CompositeCriteria<T>` & `OrCriteria<T>`
+### `CompositeCriteria<T>` / `OrCriteria<T>`
 
-Composite pattern for building complex filtering logic.
+Composite pattern for building complex filtering rules.
 
 ```typescript
-import { CompositeCriteria, OrCriteria, Criteria } from '@raicampos/toolkit';
+import { CompositeCriteria, Criteria, OrCriteria } from '@raicampos/toolkit';
 
-class AgeCriteria implements Criteria<User> {
-  matching(users: User[]): User[] {
-    return users.filter((u) => u.age >= 18);
-  }
+class AgeRule implements Criteria<User> {
+  matching(users: User[]) { return users.filter((u) => u.age >= 18); }
 }
 
-class ActiveCriteria implements Criteria<User> {
-  matching(users: User[]): User[] {
-    return users.filter((u) => u.isActive);
-  }
+class ActiveRule implements Criteria<User> {
+  matching(users: User[]) { return users.filter((u) => u.isActive); }
 }
 
-// AND logic
-const composite = new CompositeCriteria<User>().add(new AgeCriteria()).add(new ActiveCriteria());
+// AND: must satisfy all criteria
+const all = new CompositeCriteria<User>().add(new AgeRule()).add(new ActiveRule());
 
-const filtered = composite.matching(users);
+// OR: must satisfy at least one
+const any = new OrCriteria(new AgeRule(), new ActiveRule());
 
-// OR logic
-const orCriteria = new OrCriteria(new AgeCriteria(), new ActiveCriteria());
+const result = all.matching(users);
 ```
 
 ---
 
-## 🎯 Entities
-
-Domain entities with built-in validation.
-
-### `CPF`
-
-Brazilian CPF (Cadastro de Pessoas Físicas) validation and formatting.
-
-```typescript
-import { CPF } from '@raicampos/toolkit';
-
-const cpf = CPF.create('12345678909');
-if (cpf.isRight()) {
-  console.log(cpf.value.format()); // '123.456.789-09'
-  console.log(cpf.value.toString()); // '12345678909'
-}
-```
-
-### `CNPJ`
-
-Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica) validation and formatting.
-
-```typescript
-import { CNPJ } from '@raicampos/toolkit';
-
-const cnpj = CNPJ.create('12345678000195');
-if (cnpj.isRight()) {
-  console.log(cnpj.value.format()); // '12.345.678/0001-95'
-  console.log(cnpj.value.toString()); // '12345678000195'
-}
-```
-
-### `Email`
-
-Email validation entity.
-
-```typescript
-import { Email } from '@raicampos/toolkit';
-
-const email = Email.create('user@example.com');
-if (email.isRight()) {
-  console.log(email.value.toString()); // 'user@example.com'
-}
-```
-
-### `Phone`
-
-Brazilian phone number validation and formatting.
-
-```typescript
-import { Phone } from '@raicampos/toolkit';
-
-const phone = Phone.create('11987654321');
-if (phone.isRight()) {
-  console.log(phone.value.format()); // '(11) 98765-4321'
-  console.log(phone.value.toString()); // '11987654321'
-}
-```
-
----
-
-## 📁 Project Structure
-
-The toolkit is organized following Clean Architecture principles:
+## Project Structure
 
 ```
 src/
 ├── utils/
-│   ├── async/           # Async operations (sleep, retry)
-│   ├── conditional/     # Conditional helpers (coalesce, nullIf)
-│   ├── functional/      # Functional patterns (Either, mapOr)
-│   ├── json/            # JSON utilities (JSONConverter)
-│   ├── number/          # Number utilities (roundABNT)
-│   ├── object/          # Object manipulation (clone, pick, purge)
-│   ├── string/          # String transformations (StringUtils)
-│   └── validation/      # Type checking (isNull, isEmpty)
-├── types/               # TypeScript type utilities
-├── entities/            # Domain entities
-└── builders/            # Builder patterns
+│   ├── array/          # chunk, compact, difference, first, flatten, groupBy, intersection, last, unique
+│   ├── async/          # debounce, retryWithBackoff, sleep, throttle, timeout
+│   ├── conditional/    # coalesce, nullIf, undefinedIf
+│   ├── control-flow/   # assertNever, exhaustiveCheck
+│   ├── functional/     # Either, isFlagged, mapOr, recent, SpecOf
+│   ├── json/           # JSONConverter
+│   ├── number/         # MathUtils, numberParse, roundABNT
+│   ├── object/         # clone, createFactory, deepMerge, mapValues, omitKeys, pickKeys, purgeNullishValues
+│   ├── string/         # StringUtils
+│   └── validation/     # isArray, isBoolean, isDate, isEmpty, isFunction, isNull, isNumber, isObject, isString…
+├── types/
+│   ├── async-state.ts      # AsyncState, asyncLoading, asyncSuccess, asyncError
+│   ├── brand.ts            # Brand
+│   ├── deep-mutable.ts     # DeepMutable
+│   ├── deep-partial.ts     # DeepPartial
+│   ├── deep-readonly.ts    # DeepReadonly
+│   ├── deep-required.ts    # DeepRequired
+│   ├── element-of.ts       # ElementOf
+│   ├── function-types.ts   # Arguments, AsyncFunction, FirstArgument, Promisify
+│   ├── intrinsic.ts        # AssertEqual, IsAny, IsNever, IsUnknown
+│   ├── json.ts             # JsonPrimitive, JsonArray, JsonObject, JsonValue, Jsonify
+│   ├── merge.ts            # Merge
+│   ├── non-empty-array.ts  # NonEmptyArray, Tuple, AtLeast
+│   ├── nullable.ts         # Nullable
+│   ├── object-shape.ts     # Getters, RequiredKeys, OptionalKeys
+│   ├── option.ts           # Option, Some, None, some, none
+│   ├── partial-by.ts       # PartialBy, RequiredBy, ReadonlyBy
+│   ├── pick-by-type.ts     # KeysOfType, PickByType, OmitByType
+│   ├── result.ts           # Result, ok, err
+│   ├── template-literal.ts # Split, Join, PathOf
+│   ├── union.ts            # UnionToIntersection, UnionLast, UnionToTuple
+│   └── writable.ts         # Writable
+├── entities/           # CPF, CNPJ, Email, Phone, DateRange, NumberRange
+└── builders/           # CompositeBuilder, CompositeCriteria, OrCriteria
 ```
 
 ---
 
-## 🧪 Testing
-
-Run tests with coverage:
+## Testing
 
 ```bash
-npm test              # Run tests in watch mode
-npm run coverage      # Generate coverage report
-npm run lint          # Check code quality
-npm run lint:fix      # Auto-fix linting issues
-npm run format        # Format code with Prettier
-npm run format:check  # Check code formatting
+npm test             # run tests in watch mode
+npm run coverage     # generate coverage report
+npm run lint         # check code quality
+npm run lint:fix     # auto-fix linting issues
+npm run format       # format with Prettier
 ```
 
 ---
 
-## 📝 License
+## License
 
-MIT © [raicamposs]
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-## 📮 Support
-
-For issues and questions, please open an issue on [GitHub](https://github.com/raicamposs/toolkit).
+MIT © raicampos

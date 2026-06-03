@@ -31,3 +31,8 @@ lerna-debug.log*
 .env
 .env.*
 !.env.example
+
+
+# AI
+.agent/
+.claude/

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Só dispara o prompt do commitizen em commits normais.
+# Não interfere em: --amend, merge, squash, rebase.
+if [ "$2" = "" ]; then
+  exec < /dev/tty && node_modules/.bin/cz --hook || true
+fi

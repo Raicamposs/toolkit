@@ -15,11 +15,11 @@ export function purgeNullishValues<T>(obj: T): Partial<T> | undefined {
   if (typeof obj === 'object') {
     const cleanedObj = {} as Partial<T>;
     Object.keys(obj as object).forEach((key) => {
-      const value = (obj as any)[key];
+      const value = (obj as Record<string, unknown>)[key];
       const cleanedValue = purgeNullishValues(value);
 
       if (isAssigned(cleanedValue)) {
-        (cleanedObj as any)[key] = cleanedValue;
+        (cleanedObj as Record<string, unknown>)[key] = cleanedValue;
       }
     });
 

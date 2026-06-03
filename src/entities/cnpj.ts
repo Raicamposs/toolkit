@@ -3,7 +3,7 @@ import { isNullOrUndefined } from '../utils';
 
 export class CNPJ {
   static readonly REGEX = /^[A-Z0-9]{2}\.?[A-Z0-9]{3}\.?[A-Z0-9]{3}\/?[A-Z0-9]{4}\-?\d{2}$/i;
-  private _value: string;
+  private readonly _value: string;
 
   constructor(value: Nullable<string | number>) {
     const data = (value ?? '').toString().toUpperCase();

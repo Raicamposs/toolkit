@@ -1,4 +1,5 @@
 import { coalesce } from '../utils/conditional/coalesce';
+import { isNullOrUndefined } from '../utils/validation/is-null-or-undefined';
 
 export class Phone {
   static readonly REGEX = /^\(?(?:[14689][1-9]|2[12478]|3[1234578]|5[1345]|7[134579])\)? ?(?:[2-8]|9[1-9])[0-9]{3}\-?[0-9]{4}$/;
@@ -7,7 +8,7 @@ export class Phone {
     '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', '24', '27', '28', '31', '32', '33', '34', '35', '37', '38', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '53', '54', '55', '61', '62', '63', '64', '65', '66', '67', '68', '69', '71', '73', '74', '75', '77', '79', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '92', '93', '94', '95', '96', '97', '98', '99',
   ];
 
-  private _value: string;
+  private readonly _value: string;
 
   constructor(value: string) {
     const data = coalesce(value, '').toString();
@@ -32,7 +33,12 @@ export class Phone {
   }
 
   get isValid(): boolean {
-    return [Phone.REGEX.test(this._value)].every(Boolean);
+    return Phone.check(this._value);
+  }
+
+  static check(value: string | null | undefined): boolean {
+    if (isNullOrUndefined(value)) return false;
+    return Phone.REGEX.test(value);
   }
 
   static random(maxAttempts = 100): Phone {

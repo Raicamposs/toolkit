@@ -14,7 +14,7 @@ export class JSONConverter {
    * @param object - The object to convert to a JSON string
    * @returns The JSON string representation of the object, or null if the input is null or undefined
    */
-  static stringify(object: any): string | null {
+  static stringify<T>(object: T | null | undefined): string | null {
     if (isNullOrUndefined(object)) {
       return null;
     }
@@ -28,7 +28,7 @@ export class JSONConverter {
    * @param json - The JSON string to parse
    * @returns The parsed object or undefined if parsing fails or input is invalid
    */
-  static parse(json: Nullable<string>): object | undefined {
+  static parse<T = unknown>(json: Nullable<string>): T | undefined {
     if (isNullOrUndefined(json)) {
       return undefined;
     }
@@ -38,8 +38,8 @@ export class JSONConverter {
     }
 
     try {
-      return JSON.parse(json);
-    } catch (error) {
+      return JSON.parse(json) as T;
+    } catch {
       return undefined;
     }
   }
@@ -48,10 +48,10 @@ export class JSONConverter {
    * Parses a JSON string safely, returning a default value if parsing fails or input is invalid.
    *
    * @param json - The JSON string to parse
-   * @param defaultValue - The default value to return if parsing fails (defaults to an empty object)
+   * @param defaultValue - The default value to return if parsing fails
    * @returns The parsed object or the specified default value
    */
-  static parseWithDefault(json: string | null | undefined, defaultValue: any = {}): any {
-    return coalesce(this.parse(json), defaultValue);
+  static parseWithDefault<T = Record<string, unknown>>(json: string | null | undefined, defaultValue: T = {} as T): T {
+    return coalesce(this.parse<T>(json), defaultValue);
   }
 }
