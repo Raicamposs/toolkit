@@ -17,42 +17,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validar mensagens de commit (Conventional Commits)
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Print versions
         run: |
-          PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?(!)?: .{1,100}'
-          INVALID=0
+          git --version
+          node --version
+          npm --version
+          npx commitlint --version
 
-          get_commits() {
-            if [ "${{ github.event_name }}" = "pull_request" ]; then
-              git log --format="%s" \
-                "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
-            elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-              git log --format="%s" -1
-            else
-              git log --format="%s" \
-                "${{ github.event.before }}..${{ github.event.after }}"
-            fi
-          }
-
-          while IFS= read -r msg; do
-            [ -z "$msg" ] && continue
-            if echo "$msg" | grep -qE "$PATTERN"; then
-              echo "✅ $msg"
-            else
-              echo "❌ $msg"
-              INVALID=1
-            fi
-          done < <(get_commits)
-
-          if [ "$INVALID" -ne 0 ]; then
-            echo ""
-            echo "Mensagens fora do padrão Conventional Commits."
-            echo "Formato: <tipo>(<escopo>): <descrição>"
-            echo "Tipos:   feat | fix | docs | style | refactor | perf | test | build | ci | chore | revert"
-            echo ""
-            echo "Use 'npm run commit' para o prompt interativo."
-            exit 1
+      - name: Validate push commits with commitlint
+        if: github.event_name == 'push'
+        run: |
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            npx commitlint --last --verbose
+          else
+            npx commitlint --from ${{ github.event.before }} --to ${{ github.event.after }} --verbose
           fi
+
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
   test-and-lint:
     name: Lint & Test
