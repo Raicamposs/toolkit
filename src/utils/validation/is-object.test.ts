@@ -27,7 +27,7 @@ describe('isObject', () => {
   });
 
   it('should return false for functions', () => {
-    expect(isObject(() => { })).toBe(false);
+    expect(isObject(() => {})).toBe(false);
   });
 
   it('should return true for object instances (e.g. Date, RegExp)', () => {

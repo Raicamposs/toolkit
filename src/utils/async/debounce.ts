@@ -7,7 +7,7 @@
  */
 export function debounce<TArgs extends unknown[], TReturn>(
   func: (this: unknown, ...args: TArgs) => TReturn,
-  wait: number,
+  wait: number
 ): (...args: TArgs) => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 

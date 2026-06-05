@@ -31,6 +31,7 @@ npm install @raicampos/toolkit
 - [Object Utilities](#object-utilities)
 - [String Utilities](#string-utilities)
 - [Validation Utilities](#validation-utilities)
+- [Transforms](#transforms)
 - [Type Utilities](#type-utilities)
 - [Entities](#entities)
 - [Builders](#builders)
@@ -349,6 +350,21 @@ JSONConverter.parseWithDefault('{"x":1}', { x: 0 }) // { x: 1 }
 JSONConverter.parseWithDefault('bad',     { x: 0 }) // { x: 0 }
 ```
 
+### `JsonCompress.compress(jsonObject)` / `JsonCompress.decompress(compressedData)`
+
+Safely compresses any JSON-serializable value using gzip + base64 encoding, and decompresses it back.
+
+```typescript
+import { JsonCompress } from '@raicampos/toolkit';
+
+const data = { name: 'Raian', tags: ['ts', 'zlib'] };
+const compressed = await JsonCompress.compress(data);
+// 'eJyrVkrLzC/NK8ksUapWUrJSUtJRys1PzkxRsjLUUTLWMdBRMgKKmxoamVrqKBkYWwIZJkq1AHPEDjo='
+
+const decompressed = await JsonCompress.decompress<typeof data>(compressed);
+// { name: 'Raian', tags: ['ts', 'zlib'] }
+```
+
 ---
 
 ## Number Utilities
@@ -547,6 +563,63 @@ if (isString(value)) {
 if (isArrayOf(items, isNumber)) {
   items.reduce((a, b) => a + b, 0); // items is number[] here
 }
+```
+
+---
+
+## Transforms
+
+```typescript
+import { EmptyMaskToNull, EmptyValueToNull, EmptyValueToUndefined, FlagToBooleanTransform, ReplaceSpecialCharacters, ZeroIdToNull, ZeroIdToUndefined } from '@raicampos/toolkit';
+```
+
+### `EmptyMaskToNull.execute(value)`
+
+Converts masked strings that evaluate to empty (like `"   -  "`) to `null`.
+
+```typescript
+EmptyMaskToNull.execute('  -  ')  // null
+EmptyMaskToNull.execute('123-45') // '123-45'
+```
+
+### `EmptyValueToNull.execute(value)` / `EmptyValueToUndefined.execute(value)`
+
+Converts empty strings or spaces to `null` or `undefined`.
+
+```typescript
+EmptyValueToNull.execute('')       // null
+EmptyValueToUndefined.execute(' ') // undefined
+```
+
+### `FlagToBooleanTransform.execute(value, defaultValue?)` / `reverse(value, defaultValue?)`
+
+Converts truthy database flags (`'S'`, `'SIM'`, `'TRUE'`, etc.) to `boolean`, and vice-versa.
+
+```typescript
+FlagToBooleanTransform.execute('S') // true
+FlagToBooleanTransform.execute('N') // false
+FlagToBooleanTransform.execute('invalid', true) // true
+
+FlagToBooleanTransform.reverse(true) // 'S'
+FlagToBooleanTransform.reverse(false) // 'N'
+```
+
+### `ReplaceSpecialCharacters(value)`
+
+Pure function that normalizes a string by stripping accents and special diacritics.
+
+```typescript
+ReplaceSpecialCharacters('Café com Ações') // 'Cafe com Acoes'
+```
+
+### `ZeroIdToNull.execute(value)` / `ZeroIdToUndefined.execute(value)`
+
+Converts an ID that is `0` or negative to `null` or `undefined`.
+
+```typescript
+ZeroIdToNull.execute(0)     // null
+ZeroIdToNull.execute('0')   // null
+ZeroIdToNull.execute(123)   // 123
 ```
 
 ---
@@ -960,13 +1033,14 @@ const result = all.matching(users);
 
 ```
 src/
+├── transforms/         # EmptyMaskToNull, EmptyValueToNull, FlagToBooleanTransform, ZeroIdToNull...
 ├── utils/
 │   ├── array/          # chunk, compact, difference, first, flatten, groupBy, intersection, last, unique
 │   ├── async/          # debounce, retryWithBackoff, sleep, throttle, timeout
 │   ├── conditional/    # coalesce, nullIf, undefinedIf
 │   ├── control-flow/   # assertNever, exhaustiveCheck
 │   ├── functional/     # Either, isFlagged, mapOr, recent, SpecOf
-│   ├── json/           # JSONConverter
+│   ├── json/           # JSONConverter, JsonCompress
 │   ├── number/         # MathUtils, numberParse, roundABNT
 │   ├── object/         # clone, createFactory, deepMerge, mapValues, omitKeys, pickKeys, purgeNullishValues
 │   ├── string/         # StringUtils

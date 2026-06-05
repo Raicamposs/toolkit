@@ -7,7 +7,7 @@
  */
 export function throttle<TArgs extends unknown[], TReturn>(
   func: (this: unknown, ...args: TArgs) => TReturn,
-  wait: number,
+  wait: number
 ): (...args: TArgs) => void {
   let inThrottle: boolean;
   let lastFn: ReturnType<typeof setTimeout>;
@@ -27,7 +27,7 @@ export function throttle<TArgs extends unknown[], TReturn>(
             lastTime = Date.now();
           }
         },
-        Math.max(wait - (Date.now() - lastTime), 0),
+        Math.max(wait - (Date.now() - lastTime), 0)
       );
     }
   };

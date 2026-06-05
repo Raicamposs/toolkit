@@ -9,7 +9,7 @@ import { isObject } from '../validation/is-object';
  */
 export function deepMerge<T extends Record<string, unknown>, U extends Record<string, unknown>>(
   target: T,
-  source: U,
+  source: U
 ): T & U {
   const output = { ...target } as T & U;
 
@@ -21,7 +21,7 @@ export function deepMerge<T extends Record<string, unknown>, U extends Record<st
       if (isObject(sourceVal) && isObject(targetVal)) {
         (output as Record<string, unknown>)[key] = deepMerge(
           targetVal as Record<string, unknown>,
-          sourceVal as Record<string, unknown>,
+          sourceVal as Record<string, unknown>
         );
       } else {
         (output as Record<string, unknown>)[key] = sourceVal;

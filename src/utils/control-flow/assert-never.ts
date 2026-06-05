@@ -15,7 +15,7 @@
  * }
  */
 export function assertNever(value: never, message?: string): never {
-  throw new Error(message ?? `Unhandled value: ${JSON.stringify(value)}`)
+  throw new Error(message ?? `Unhandled value: ${JSON.stringify(value)}`);
 }
 
 /**

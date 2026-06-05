@@ -7,7 +7,7 @@
  */
 export function groupBy<T, K extends string | number | symbol>(
   array: T[],
-  keyFn: (item: T) => K,
+  keyFn: (item: T) => K
 ): Record<K, T[]> {
   return array.reduce(
     (acc, item) => {
@@ -16,6 +16,6 @@ export function groupBy<T, K extends string | number | symbol>(
       acc[key].push(item);
       return acc;
     },
-    {} as Record<K, T[]>,
+    {} as Record<K, T[]>
   );
 }

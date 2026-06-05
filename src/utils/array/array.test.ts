@@ -9,7 +9,10 @@ import { groupBy } from './group-by';
 describe('chunk', () => {
   it('deve dividir o array em grupos do tamanho especificado', () => {
     expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
-    expect(chunk([1, 2, 3, 4], 2)).toEqual([[1, 2], [3, 4]]);
+    expect(chunk([1, 2, 3, 4], 2)).toEqual([
+      [1, 2],
+      [3, 4],
+    ]);
   });
   it('deve retornar array vazio se size <= 0', () => {
     expect(chunk([1, 2, 3], 0)).toEqual([]);
@@ -22,11 +25,18 @@ describe('chunk', () => {
 describe('groupBy', () => {
   it('deve agrupar por chave', () => {
     const result = groupBy(
-      [{ type: 'a', v: 1 }, { type: 'b', v: 2 }, { type: 'a', v: 3 }],
-      (x) => x.type,
+      [
+        { type: 'a', v: 1 },
+        { type: 'b', v: 2 },
+        { type: 'a', v: 3 },
+      ],
+      (x) => x.type
     );
     expect(result).toEqual({
-      a: [{ type: 'a', v: 1 }, { type: 'a', v: 3 }],
+      a: [
+        { type: 'a', v: 1 },
+        { type: 'a', v: 3 },
+      ],
       b: [{ type: 'b', v: 2 }],
     });
   });

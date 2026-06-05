@@ -10,4 +10,4 @@
  * const orderId = '123' as OrderId
  * getUser(orderId) // ← compile error: OrderId is not UserId
  */
-export type Brand<K, T> = K & { readonly __brand: T }
+export type Brand<K, T> = K & { readonly __brand: T };

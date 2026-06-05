@@ -11,7 +11,10 @@ export class CNPJ {
   }
 
   get value(): string {
-    return this._value.replace(/([A-Z0-9]{2})([A-Z0-9]{3})([A-Z0-9]{3})([A-Z0-9]{4})(\d{2})/, '$1.$2.$3/$4-$5');
+    return this._value.replace(
+      /([A-Z0-9]{2})([A-Z0-9]{3})([A-Z0-9]{3})([A-Z0-9]{4})(\d{2})/,
+      '$1.$2.$3/$4-$5'
+    );
   }
 
   get stripped(): string {
@@ -23,7 +26,10 @@ export class CNPJ {
   }
 
   get masked(): string {
-    return this._value.replace(/([A-Z0-9]{2})([A-Z0-9]{3})([A-Z0-9]{3})([A-Z0-9]{4})(\d{2})/, '$1.***.***/$4-$5');
+    return this._value.replace(
+      /([A-Z0-9]{2})([A-Z0-9]{3})([A-Z0-9]{3})([A-Z0-9]{4})(\d{2})/,
+      '$1.***.***/$4-$5'
+    );
   }
 
   static random(): CNPJ {
@@ -50,12 +56,15 @@ export class CNPJ {
 
     if (!validTypes) return false;
 
-    const strValue = value.toString().toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const strValue = value
+      .toString()
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '');
 
     if (strValue.length !== 14) return false;
     if (new Set(strValue.split('')).size === 1) return false;
 
-    const numbers = strValue.split('').map(c => c.charCodeAt(0) - 48);
+    const numbers = strValue.split('').map((c) => c.charCodeAt(0) - 48);
 
     const [firstDigit, secondDigit] = numbers.slice(12);
 

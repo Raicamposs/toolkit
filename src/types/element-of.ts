@@ -8,4 +8,4 @@
  * type Users = Array<{ id: string; name: string }>
  * type User = ElementOf<Users> // { id: string; name: string }
  */
-export type ElementOf<T> = T extends (infer E)[] ? E : never
+export type ElementOf<T> = T extends (infer E)[] ? E : never;

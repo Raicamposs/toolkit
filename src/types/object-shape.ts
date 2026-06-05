@@ -6,8 +6,8 @@
  * type RK = RequiredKeys<User> // 'id' | 'name'
  */
 export type RequiredKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? never : K
-}[keyof T]
+  [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
+}[keyof T];
 
 /**
  * Extracts keys that are optional in `T`.
@@ -17,8 +17,8 @@ export type RequiredKeys<T> = {
  * type OK = OptionalKeys<User> // 'email'
  */
 export type OptionalKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
-}[keyof T]
+  [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
+}[keyof T];
 
 /**
  * Generates getter method names for each key of `T`.
@@ -30,5 +30,5 @@ export type OptionalKeys<T> = {
  * // { getName: () => string; getAge: () => number }
  */
 export type Getters<T> = {
-  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K]
-}
+  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];
+};

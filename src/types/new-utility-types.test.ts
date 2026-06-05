@@ -90,7 +90,12 @@ describe('NonEmptyArray / Tuple / AtLeast', () => {
 });
 
 describe('KeysOfType / PickByType / OmitByType', () => {
-  interface Mixed { id: number; name: string; active: boolean; age: number }
+  interface Mixed {
+    id: number;
+    name: string;
+    active: boolean;
+    age: number;
+  }
 
   it('KeysOfType deve extrair chaves pelo tipo do valor', () => {
     type NumKeys = KeysOfType<Mixed, number>;
@@ -109,7 +114,11 @@ describe('KeysOfType / PickByType / OmitByType', () => {
 });
 
 describe('PartialBy / RequiredBy / ReadonlyBy', () => {
-  interface User { id: number; name: string; email?: string }
+  interface User {
+    id: number;
+    name: string;
+    email?: string;
+  }
 
   it('PartialBy deve tornar chaves específicas opcionais', () => {
     type Draft = PartialBy<User, 'id'>;
@@ -144,7 +153,12 @@ describe('Merge', () => {
 });
 
 describe('RequiredKeys / OptionalKeys / Getters', () => {
-  interface Profile { id: number; name: string; bio?: string; avatar?: string }
+  interface Profile {
+    id: number;
+    name: string;
+    bio?: string;
+    avatar?: string;
+  }
 
   it('RequiredKeys deve extrair chaves obrigatórias', () => {
     type RK = RequiredKeys<Profile>;
@@ -229,14 +243,12 @@ describe('Type intrinsics', () => {
   });
 
   it('IsAny deve retornar true para any', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectTypeOf<IsAny<any>>().toEqualTypeOf<true>();
     expectTypeOf<IsAny<unknown>>().toEqualTypeOf<false>();
   });
 
   it('IsUnknown deve retornar true apenas para unknown', () => {
     expectTypeOf<IsUnknown<unknown>>().toEqualTypeOf<true>();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectTypeOf<IsUnknown<any>>().toEqualTypeOf<false>();
     expectTypeOf<IsUnknown<string>>().toEqualTypeOf<false>();
   });

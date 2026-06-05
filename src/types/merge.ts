@@ -8,4 +8,4 @@
  * type Merged = Merge<Base, Override>
  * // { id: number; name: string; createdAt: string }
  */
-export type Merge<T, U> = Omit<T, keyof U> & U
+export type Merge<T, U> = Omit<T, keyof U> & U;

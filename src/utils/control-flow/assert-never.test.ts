@@ -15,9 +15,12 @@ describe('assertNever', () => {
 
     function handle(d: Direction): string {
       switch (d) {
-        case 'left': return 'esquerda';
-        case 'right': return 'direita';
-        default: return assertNever(d);
+        case 'left':
+          return 'esquerda';
+        case 'right':
+          return 'direita';
+        default:
+          return assertNever(d);
       }
     }
 

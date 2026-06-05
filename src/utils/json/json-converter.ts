@@ -51,7 +51,10 @@ export class JSONConverter {
    * @param defaultValue - The default value to return if parsing fails
    * @returns The parsed object or the specified default value
    */
-  static parseWithDefault<T = Record<string, unknown>>(json: string | null | undefined, defaultValue: T = {} as T): T {
+  static parseWithDefault<T = Record<string, unknown>>(
+    json: string | null | undefined,
+    defaultValue: T = {} as T
+  ): T {
     return coalesce(this.parse<T>(json), defaultValue);
   }
 }

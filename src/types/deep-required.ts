@@ -6,6 +6,4 @@
  * type RequiredConfig = DeepRequired<Config>
  * // { host: { port: number } }
  */
-export type DeepRequired<T> = T extends object
-  ? { [K in keyof T]-?: DeepRequired<T[K]> }
-  : T
+export type DeepRequired<T> = T extends object ? { [K in keyof T]-?: DeepRequired<T[K]> } : T;

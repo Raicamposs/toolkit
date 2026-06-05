@@ -1,22 +1,22 @@
 /**
  * JSON-safe primitive types.
  */
-export type JsonPrimitive = string | number | boolean | null
+export type JsonPrimitive = string | number | boolean | null;
 
 /**
  * A JSON array (recursive).
  */
-export type JsonArray = JsonValue[]
+export type JsonArray = JsonValue[];
 
 /**
  * A JSON object (recursive).
  */
-export type JsonObject = { [key: string]: JsonValue }
+export type JsonObject = { [key: string]: JsonValue };
 
 /**
  * Any value that can be safely serialized to JSON.
  */
-export type JsonValue = JsonPrimitive | JsonArray | JsonObject
+export type JsonValue = JsonPrimitive | JsonArray | JsonObject;
 
 /**
  * Transforms a type `T` to its JSON-serializable representation.
@@ -35,4 +35,4 @@ export type Jsonify<T> = T extends JsonPrimitive
       ? R
       : T extends object
         ? { [K in keyof T]: Jsonify<T[K]> }
-        : never
+        : never;

@@ -110,10 +110,7 @@ describe('CompositeBuilder', () => {
       const setAge = (user: User) => ({ ...user, age: 25 });
       const setRole = (user: User) => ({ ...user, role: 'admin' });
 
-      const builder = CompositeBuilder.new<User>()
-        .add(setName)
-        .add(setAge)
-        .add(setRole);
+      const builder = CompositeBuilder.new<User>().add(setName).add(setAge).add(setRole);
 
       const initialUser: User = {
         id: 1,
@@ -141,10 +138,7 @@ describe('CompositeBuilder', () => {
       const setName2 = (user: User) => ({ ...user, name: 'Second' });
       const setName3 = (user: User) => ({ ...user, name: 'Final' });
 
-      const builder = CompositeBuilder.new<User>()
-        .add(setName1)
-        .add(setName2)
-        .add(setName3);
+      const builder = CompositeBuilder.new<User>().add(setName1).add(setName2).add(setName3);
 
       const initialUser: User = {
         id: 1,
@@ -319,9 +313,7 @@ describe('CompositeBuilder', () => {
         inStock: true,
       });
 
-      const builder = CompositeBuilder.new<Product>()
-        .add(applyDiscount)
-        .add(markInStock);
+      const builder = CompositeBuilder.new<Product>().add(applyDiscount).add(markInStock);
 
       const product: Product = {
         id: 1,
@@ -381,10 +373,7 @@ describe('CompositeBuilder', () => {
       const step2 = (user: User) => ({ ...user, email: user.email.toLowerCase() });
       const step3 = (user: User) => ({ ...user, age: user.age + 1 });
 
-      const builder = CompositeBuilder.new<User>()
-        .add(step1)
-        .add(step2)
-        .add(step3);
+      const builder = CompositeBuilder.new<User>().add(step1).add(step2).add(step3);
 
       const user: User = {
         id: 1,
@@ -477,7 +466,7 @@ describe('CompositeBuilder', () => {
     });
 
     it('deve lidar com objetos vazios', () => {
-      interface EmptyObject { }
+      interface EmptyObject {}
 
       const builder = CompositeBuilder.new<EmptyObject>();
       const result = builder.build({});

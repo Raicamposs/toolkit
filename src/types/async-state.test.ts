@@ -40,9 +40,12 @@ describe('AsyncState', () => {
     it('deve permitir narrowing pelo campo status', () => {
       function handleState<T>(state: AsyncState<T>): string {
         switch (state.status) {
-          case 'loading': return 'carregando';
-          case 'success': return `dado: ${JSON.stringify(state.data)}`;
-          case 'error': return `erro: ${state.error}`;
+          case 'loading':
+            return 'carregando';
+          case 'success':
+            return `dado: ${JSON.stringify(state.data)}`;
+          case 'error':
+            return `erro: ${state.error}`;
         }
       }
 

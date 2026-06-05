@@ -7,9 +7,9 @@
  */
 export function mapValues<T extends object, U>(
   obj: T,
-  mapFn: (value: T[keyof T], key: keyof T) => U,
+  mapFn: (value: T[keyof T], key: keyof T) => U
 ): Record<keyof T, U> {
   return Object.fromEntries(
-    (Object.entries(obj) as [keyof T, T[keyof T]][]).map(([k, v]) => [k, mapFn(v, k)]),
+    (Object.entries(obj) as [keyof T, T[keyof T]][]).map(([k, v]) => [k, mapFn(v, k)])
   ) as Record<keyof T, U>;
 }

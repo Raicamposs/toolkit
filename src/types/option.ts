@@ -13,9 +13,9 @@
  *   console.log(result.value)
  * }
  */
-export type Some<T> = { readonly type: 'some'; readonly value: T }
-export type None = { readonly type: 'none' }
-export type Option<T> = Some<T> | None
+export type Some<T> = { readonly type: 'some'; readonly value: T };
+export type None = { readonly type: 'none' };
+export type Option<T> = Some<T> | None;
 
-export const some = <T>(value: T): Some<T> => ({ type: 'some', value })
-export const none: None = { type: 'none' }
+export const some = <T>(value: T): Some<T> => ({ type: 'some', value });
+export const none: None = { type: 'none' };

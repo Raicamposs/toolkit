@@ -5,7 +5,7 @@
  * type Fn = (a: string, b: number) => void
  * type Args = Arguments<Fn> // [string, number]
  */
-export type Arguments<T> = T extends (...args: infer A) => unknown ? A : never
+export type Arguments<T> = T extends (...args: infer A) => unknown ? A : never;
 
 /**
  * Extracts the type of the first argument of a function.
@@ -16,7 +16,7 @@ export type Arguments<T> = T extends (...args: infer A) => unknown ? A : never
  */
 export type FirstArgument<T> = T extends (first: infer F, ...args: unknown[]) => unknown
   ? F
-  : never
+  : never;
 
 /**
  * Wraps a function's return type in `Promise`, preserving its signature.
@@ -27,7 +27,7 @@ export type FirstArgument<T> = T extends (first: infer F, ...args: unknown[]) =>
  */
 export type AsyncFunction<T extends (...args: unknown[]) => unknown> = (
   ...args: Parameters<T>
-) => Promise<Awaited<ReturnType<T>>>
+) => Promise<Awaited<ReturnType<T>>>;
 
 /**
  * Transforms a function type so that its return value is wrapped in `Promise`.
@@ -38,4 +38,4 @@ export type AsyncFunction<T extends (...args: unknown[]) => unknown> = (
  */
 export type Promisify<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => Promise<Awaited<R>>
-  : never
+  : never;

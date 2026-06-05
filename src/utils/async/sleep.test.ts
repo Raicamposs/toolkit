@@ -17,11 +17,11 @@ describe('sleep', () => {
     });
 
     expect(resolvido).toBe(false);
-    
+
     // Avança 49ms, ainda não deve ter resolvido
     await vi.advanceTimersByTimeAsync(49);
     expect(resolvido).toBe(false);
-    
+
     // Avança o último 1ms, agora deve resolver
     await vi.advanceTimersByTimeAsync(1);
     expect(resolvido).toBe(true);
@@ -34,7 +34,7 @@ describe('sleep', () => {
     });
 
     expect(resolvido).toBe(false);
-    
+
     await vi.advanceTimersByTimeAsync(0);
     expect(resolvido).toBe(true);
   });
@@ -46,10 +46,10 @@ describe('sleep', () => {
     });
 
     expect(resolvido).toBe(false);
-    
+
     await vi.advanceTimersByTimeAsync(99);
     expect(resolvido).toBe(false);
-    
+
     await vi.advanceTimersByTimeAsync(1);
     expect(resolvido).toBe(true);
   });
@@ -61,7 +61,7 @@ describe('sleep', () => {
     });
 
     expect(resolvido).toBe(false);
-    
+
     // Valores negativos no setTimeout são tratados como 0 pelo Node/Browser
     await vi.advanceTimersByTimeAsync(0);
     expect(resolvido).toBe(true);

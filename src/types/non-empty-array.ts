@@ -6,11 +6,11 @@
  *   return arr[0] // safe — no undefined check needed
  * }
  */
-export type NonEmptyArray<T> = [T, ...T[]]
+export type NonEmptyArray<T> = [T, ...T[]];
 
 type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N
   ? R
-  : _TupleOf<T, N, [T, ...R]>
+  : _TupleOf<T, N, [T, ...R]>;
 
 /**
  * A tuple of exactly `N` elements of type `T`.
@@ -23,7 +23,7 @@ export type Tuple<T, N extends number> = N extends N
   ? number extends N
     ? T[]
     : _TupleOf<T, N, []>
-  : never
+  : never;
 
 /**
  * An array with at least `N` elements of type `T`.
@@ -31,4 +31,4 @@ export type Tuple<T, N extends number> = N extends N
  * @example
  * type AtLeastTwo = AtLeast<string, 2> // [string, string, ...string[]]
  */
-export type AtLeast<T, N extends number> = [...Tuple<T, N>, ...T[]]
+export type AtLeast<T, N extends number> = [...Tuple<T, N>, ...T[]];
